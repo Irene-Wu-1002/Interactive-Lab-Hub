@@ -74,7 +74,31 @@ The interactive device can be anything *except* a computer, a tablet computer or
 
 \*\***Describe your setting, players, activity and goals here.**\*\*
 
-There is a person running besides river bank. He wore a interactive device to track his heart rate. When hearbeat exceed 180 beats per minutes, the device would flashing. This flash light would detect and notify runners the status of working out.
+Imagine you are working out at some places, such as gym, riverside, and so on. You may want to know the stage of your heart rate, which can help you to know the following actions. For example, when your heart rate meets the highest level, it is time for you to take down, or you may be harmed. In this case, this device come out. People can use this device when working out and know his/her the stage of heart rate.
+
+The device would have 6 different light colors based on stages of heart rate as following table.
+
+The following table is the 5 stages provided by American College of Sports Medicine.
+
+|Intensity Zone | %HRmax | %HRR  |
+|--|--|--|
+| Very Light| <57%| <30% |
+| Light | 57-63% | 30-39% |
+| Moderate | 64-76% | 40-59% |
+| Vigorous | 77-95% | 60-89% |
+| Maximal | 96-100% | 90-100%|
+
+* %HRmax: 220-age
+
+In this senario, we use %HRmax to categorize each stage of working out. As the following table mentioned, there are different colors are assigned to different Intensity Zone. People can be easily notified by these color on their interactive device.
+
+|Intensity Zone | %HRmax | color  |
+|--|--|--|
+| Very Light| <57%| blue |
+| Light | 57-63% | green |
+| Moderate | 64-76% | yellow |
+| Vigorous | 77-95% | orange |
+| Maximal | 96-100% | red|
 
 Storyboards are a tool for visually exploring a users interaction with a device. They are a fast and cheap method to understand user flow, and iterate on a design before attempting to build on it. Take some time to read through this explanation of [storyboarding in UX design](https://www.smashingmagazine.com/2017/10/storyboarding-ux-design/). Sketch seven storyboards of the interactions you are planning. **It does not need to be perfect**, but must get across the behavior of the interactive device and the other characters in the scene. 
 
