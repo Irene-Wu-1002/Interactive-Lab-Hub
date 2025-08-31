@@ -176,6 +176,18 @@ Think about the setting of the device: is the environment a place where the devi
 
 \*\***What concerns or opportunitities are influencing the way you've designed the device to look?**\*\*
 
+**Concerns:**
+
+The main concerns that influence the design are visibility, stability, comfort issues, size, interference with motion, sweat resistance, and data accuracy.
+1. Visibility: We use different light colors to notify users of their heart rate during physical activity, which means the device must be visible for the messages to be received. As a result, it can only be placed in a few positions on the body.
+2. Stability: During physical activity, users make movements of varying intensity—some large, some small. These movements can affect the stability of the device.
+3. Comfort issues: During physical activity, several factors need to be considered, such as the device’s size, sweat resistance, and potential interference with movement, to ensure it does not hinder the workout and remains comfortable for the user.
+4. Data Accuracy: During movement, the device may shift from its intended position, which can lead to inaccurate data.
+
+**Opportunities:**
+Some of the opportunities include real-time feedback, customizable experience, motivation boost, and integration with smartphones or other devices.
+1. 
+
 
 ## Part F. Record
 
