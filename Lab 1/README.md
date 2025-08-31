@@ -111,6 +111,7 @@ In this senario, we use %HRmax to categorize each stage of working out. As the f
 | Maximal | 96-100% | red|
 
 **Goal:**
+
 This device is to help users monitor their heart rate during physical activity, so they can exercise safely, optimize performance, and prevent potential health risks.
 
 Storyboards are a tool for visually exploring a users interaction with a device. They are a fast and cheap method to understand user flow, and iterate on a design before attempting to build on it. Take some time to read through this explanation of [storyboarding in UX design](https://www.smashingmagazine.com/2017/10/storyboarding-ux-design/). Sketch seven storyboards of the interactions you are planning. **It does not need to be perfect**, but must get across the behavior of the interactive device and the other characters in the scene. 
