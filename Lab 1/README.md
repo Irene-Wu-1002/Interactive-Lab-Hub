@@ -185,7 +185,9 @@ The main concerns that influence the design are visibility, stability, comfort i
 4. Data Accuracy: During movement, the device may shift from its intended position, which can lead to inaccurate data.
 
 **Opportunities:**
+
 Some of the opportunities include real-time feedback, customizable experience, motivation boost, and integration with smartphones or other devices.
+
 1. 
 
 
