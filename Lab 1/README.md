@@ -74,9 +74,17 @@ The interactive device can be anything *except* a computer, a tablet computer or
 
 \*\***Describe your setting, players, activity and goals here.**\*\*
 
-Imagine you are working out at some places, such as gym, riverside, and so on. You may want to know the stage of your heart rate, which can help you to know the following actions. For example, when your heart rate meets the highest level, it is time for you to take down, or you may be harmed. In this case, this device come out. People can use this device when working out and know his/her the stage of heart rate.
+**Setting:**
+At Riverside
 
-The device would have 6 different light colors based on stages of heart rate as following table.
+**Player:**
+The Runner
+
+**Activity:**
+
+Imagine you are working out at some places, such as the gym, riverside, and so on. You may want to know the stage of your heart rate, which can help you to know the following actions. For example, when your heart rate reaches its peak level, it’s time to take a break to avoid potential harm. This is where the device comes in. It allows people to monitor their heart rate while exercising and stay informed about their physical condition.
+
+The device would have 5 different light colors based on stages of heart rate as following table.
 
 The following table is the 5 stages provided by American College of Sports Medicine.
 
@@ -94,11 +102,14 @@ In this senario, we use %HRmax to categorize each stage of working out. As the f
 
 |Intensity Zone | %HRmax | color  |
 |--|--|--|
-| Very Light| <57%| blue |
-| Light | 57-63% | green |
-| Moderate | 64-76% | yellow |
-| Vigorous | 77-95% | orange |
+| Very Light| <57%| white |
+| Light | 57-63% | blue |
+| Moderate | 64-76% | green |
+| Vigorous | 77-95% | yellow |
 | Maximal | 96-100% | red|
+
+**Goal:**
+This device is to help users monitor their heart rate during physical activity, so they can exercise safely, optimize performance, and prevent potential health risks.
 
 Storyboards are a tool for visually exploring a users interaction with a device. They are a fast and cheap method to understand user flow, and iterate on a design before attempting to build on it. Take some time to read through this explanation of [storyboarding in UX design](https://www.smashingmagazine.com/2017/10/storyboarding-ux-design/). Sketch seven storyboards of the interactions you are planning. **It does not need to be perfect**, but must get across the behavior of the interactive device and the other characters in the scene. 
 
@@ -115,8 +126,19 @@ Try physically acting out the interaction you planned. For now, you can just pre
 
 \*\***Are there things that seemed better on paper than acted out?**\*\*
 
+In the planning stage, we expected users to raise their hands to check the light while running, which seems to be intuitive and easy to perform because it is similar to the act of checking the time on a watch.
+In practice, we found three problems with using a device that emits light. 
+1. The runner would not know when to check the device; as a result, they have to check it regularly.
+2. When the user is running, raising their hands to check the light requires extra effort, which distracts them from focusing on running.
+3. Since the device must be visible to the user, it can only be worn in a few places on the body, such as wrists or elbows. But if we use other types of notifications, like vibrations or sounds, the device could be worn in more areas of the body.
+
+Due to these problems, the device might not useful for users.
+
+
+
 \*\***Are there new ideas that occur to you or your collaborator that come up from the acting?**\*\*
 
+One solution we came up with is that we could use vibration instead of light, making it effortless for the user to receive feedback from the device. With this type of notification, users can receive information passively rather than keep actively checking their status.
 
 ## Part C. Prototype the device
 
