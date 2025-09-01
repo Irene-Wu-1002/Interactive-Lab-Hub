@@ -76,14 +76,6 @@ The interactive device can be anything *except* a computer, a tablet computer or
 
 \*\***Describe your setting, players, activity and goals here.**\*\*
 
-**Setting:**
-At gym,and riverside
-
-**Player:**
-A person who is exercising
-
-**Activity:**
-
 Imagine you are working out at some places, such as the gym, riverside, and so on. You may want to know the stage of your heart rate to guide your next move. For example, when your heart rate reaches its peak level, it’s time to take a break to avoid potential harm. This is where the device comes in. It allows people to monitor their heart rate while exercising and stay informed about their physical condition.
 
 The device would have 5 different light colors based on stages of heart rate as in the following table.
