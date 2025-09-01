@@ -4,7 +4,7 @@
 
 \*\***NAME OF COLLABORATOR HERE**\*\*
 
-Charlotte Lin (hl2575), Jessica Hsiao (dh779), Zoe Tseng
+Charlotte Lin (hl2575), Jessica Hsiao (dh779), Zoe Tseng (yzt2)
 
 In the original stage production of Peter Pan, Tinker Bell was represented by a darting light created by a small handheld mirror off-stage, reflecting a little circle of light from a powerful lamp. Tinkerbell communicates her presence through this light to the other characters. See more info [here](https://en.wikipedia.org/wiki/Tinker_Bell). 
 
@@ -77,18 +77,19 @@ The interactive device can be anything *except* a computer, a tablet computer or
 \*\***Describe your setting, players, activity and goals here.**\*\*
 
 **Setting:**
-At Riverside
+At gym,and riverside
 
 **Player:**
-The Runner
+A person who is exercising
 
 **Activity:**
 
-Imagine you are working out at some places, such as the gym, riverside, and so on. You may want to know the stage of your heart rate, which can help you to know the following actions. For example, when your heart rate reaches its peak level, it’s time to take a break to avoid potential harm. This is where the device comes in. It allows people to monitor their heart rate while exercising and stay informed about their physical condition.
+Imagine you are working out at some places, such as the gym, riverside, and so on. You may want to know the stage of your heart rate to guide your next move. For example, when your heart rate reaches its peak level, it’s time to take a break to avoid potential harm. This is where the device comes in. It allows people to monitor their heart rate while exercising and stay informed about their physical condition.
 
-The device would have 5 different light colors based on stages of heart rate as following table.
+The device would have 5 different light colors based on stages of heart rate as in the following table.
 
-The following table is the 5 stages provided by American College of Sports Medicine.
+The following table is the 5 stages provided by American College of Sports Medicine. 
+
 
 |Intensity Zone | %HRmax | %HRR  |
 |--|--|--|
@@ -98,9 +99,10 @@ The following table is the 5 stages provided by American College of Sports Medic
 | Vigorous | 77-95% | 60-89% |
 | Maximal | 96-100% | 90-100%|
 
-* %HRmax: 220-age
+* HRmax: Maximum heart rate, which is the number of heartbeats per minute that your heart can reach during exercise. In most cases, people use 220 minus their age to calculate the number. 
+* HRR: Heart rate reserve, which is the difference between maximum heart rate and resting heart rate. Resting heart rate is the number of heartbeats per minute when the person is not exercising.
 
-In this senario, we use %HRmax to categorize each stage of working out. As the following table mentioned, there are different colors are assigned to different Intensity Zone. People can be easily notified by these color on their interactive device.
+In this scenario, we use %HRmax to categorize each stage of working out. As the following table indicates, different colors are assigned to different Intensity Zones. These colors can easily notify people on their interactive devices. We align the color schema with the intuitive perception of intensity, where white denotes a neutral baseline, blue represents a sense of calm, green conveys a balanced state, yellow suggests higher activity, and red signifies maximum intensity.
 
 |Intensity Zone | %HRmax | color  |
 |--|--|--|
@@ -123,6 +125,7 @@ Present your ideas to the other people in your breakout room (or in small groups
 
 \*\***Summarize feedback you got here.**\*\*
 
+A classmate mentioned that the device is practical and particularly useful given that people value their health management nowadays. Another classmate suggests that we could also detect the blood oxygen level, which is another important indicator in exercise, to provide more information, allowing the device to analyze the exercise level of the user more accurately.
 
 ## Part B. Act out the Interaction
 
@@ -131,18 +134,15 @@ Try physically acting out the interaction you planned. For now, you can just pre
 \*\***Are there things that seemed better on paper than acted out?**\*\*
 
 In the planning stage, we expected users to raise their hands to check the light while running, which seems to be intuitive and easy to perform because it is similar to the act of checking the time on a watch.
-In practice, we found three problems with using a device that emits light. 
-1. The runner would not know when to check the device; as a result, they have to check it regularly.
-2. When the user is running, raising their hands to check the light requires extra effort, which distracts them from focusing on running.
-3. Since the device must be visible to the user, it can only be worn in a few places on the body, such as wrists or elbows. But if we use other types of notifications, like vibrations or sounds, the device could be worn in more areas of the body.
-
-Due to these problems, the device might not useful for users.
-
+In practice, we found two problems with using a device that emits light. The first one is that the runner would not know when to check the device; as a result, they have to check it regularly. The other problem is that when the user is running, raising their hands to check the light requires extra effort, which distracts them from focusing on running.
 
 
 \*\***Are there new ideas that occur to you or your collaborator that come up from the acting?**\*\*
 
-One solution we came up with is that we could use vibration instead of light, making it effortless for the user to receive feedback from the device. With this type of notification, users can receive information passively rather than keep actively checking their status.
+1. One solution we came up with is that we could use vibration instead of light, making it effortless for the user to receive feedback from the device. With this type of notification, users can receive information passively rather than keep actively checking their status.
+2. We noticed that placement really matters. Wearing the device on the wrist works fine when you’re not moving much, but during more intense activities like running or cycling, it’s harder to check quickly. An armband or chest strap with a front-facing light could work better for runners since the light would stay in their line of sight and be easier to notice without extra effort.
+
+
 
 ## Part C. Prototype the device
 
@@ -156,15 +156,20 @@ If you run into technical issues with this tool, you can also use a light switch
 
 \*\***Give us feedback on Tinkerbelle.**\*\*
 
+The installation process was quite smooth overall, and the instructions were very clear to follow. Although we did run into some version compatibility issues during setup, the documentation provided helpful solutions, so we were able to resolve them quickly.
 
 ## Part D. Wizard the device
 Take a little time to set up the wizarding set-up that allows for someone to remotely control the device while someone acts with it. Hint: You can use Zoom to record videos, and you can pin someone’s video feed if that is the scene which you want to record. 
 
 \*\***Include your first attempts at recording the set-up video here.**\*\*
 
+The video is on Google Drive: [Lab 1] (https://drive.google.com/drive/folders/1-UZNWlaaXBWAfdHco78UJXUNBQaKrdvQ?usp=drive_link)
+
 Now, change the goal within the same setting, and update the interaction with the paper prototype. 
 
 \*\***Show the follow-up work here.**\*\*
+
+Another goal is to use the device as a customizable training timer. The athlete wearing the device can program how long each training session or segment should take. Each color corresponds to a specific session, for example, warm-up, high intensity intervals or rest periods. Based on these settings, the device will use the lights to inform the transitions of sessions in real time. By allowing the user to stay focused on the performance without needing to check an external timer, the device can ensure a more immersive and efficient experience for the user. 
 
 
 ## Part E. Costume the device
@@ -173,30 +178,45 @@ Only now should you start worrying about what the device should look like. Devel
 
 Think about the setting of the device: is the environment a place where the device could overheat? Is water a danger? Does it need to have bright colors in an emergency setting?
 
+
 \*\***Include sketches of what your devices might look like here.**\*\*
+
+For each design, three images are presented: the first image illustrates the prototype being worn by a user, the second image displays the physical prototype itself, and the third image depicts the envisioned ideal appearance of the device, which is generated by ChatGPT.
+
+Design 1: put on the wrist as a bracelet
+[IMG1](https://drive.google.com/file/d/1zi9D9qk6jA3uu9SqXD1GZ7kTe8hkDGAv/view?usp=drive_link)
+[IMG2](https://drive.google.com/file/d/1fhOGeP9dq4FI__sh6Wo5fHy5BQGLew3g/view?usp=drive_link)
+[IMG3](https://drive.google.com/file/d/1elbv7yGGAYGRUY_nlifapgo-B5iAv2Jf/view?usp=drive_link)
+
+Design 2: put on the waist as a belt
+[IMG1](https://drive.google.com/file/d/1qHeYdcHMQ7rzVHpTPYmaba0qsk3n53kR/view?usp=drive_link)
+[IMG2](https://drive.google.com/file/d/1kKDEtdDtSAJtHMRJxp5yKNcI-IE_3d0h/view?usp=drive_link)
+[IMG3](https://drive.google.com/file/d/1VRx64pGwG6c3FEzfOacgmFcOxnUFY8-D/view?usp=drive_link)
+
+Design 3: put on an index finger as a ring
+[IMG1](https://drive.google.com/file/d/1rs2AVo--ipF47f9dsCECL9bQHQL2Uozf/view?usp=drive_link)
+[IMG2](https://drive.google.com/file/d/1cZn25KP4MtnGmrE91JnX1P1gkWTiuYMh/view?usp=drive_link)
+[IMG3](https://drive.google.com/file/d/1q1UacR9k6ldg2gdqrEO_rOoX8mMom8XZ/view?usp=drive_link)
+
 
 \*\***What concerns or opportunitities are influencing the way you've designed the device to look?**\*\*
 
 **Concerns:**
 
-The main concerns that influence the design are visibility, stability, comfort issues, size, interference with motion, sweat resistance, and data accuracy.
-1. Visibility: We use different light colors to notify users of their heart rate during physical activity, which means the device must be visible for the messages to be received. As a result, it can only be placed in a few positions on the body.
-2. Stability: During physical activity, users make movements of varying intensity—some large, some small. These movements can affect the stability of the device.
-3. Comfort issues: During physical activity, several factors need to be considered, such as the device’s size, sweat resistance, and potential interference with movement, to ensure it does not hinder the workout and remains comfortable for the user.
-4. Data Accuracy: During movement, the device may shift from its intended position, which can lead to inaccurate data.
+* The design is primarily shaped by several key concerns, including visibility, stability, comfort, device size, potential interference with the athlete's motion, sweat resistance, and the accuracy of data collected. Addressing these challenges is essential to ensure the device performs reliably during intense physical activity. 
+* At the same time, the device also presents valuable opportunities including providing real time feedback, offering customizable user experience, enhancing motion through visual cues, and enabling integration with other devices to support broader training goals. 
 
-**Opportunities:**
-
-Some of the opportunities include real-time feedback, customizable experience, motivation boost, and integration with smartphones or other devices.
-
-1. 
 
 
 ## Part F. Record
 
 \*\***Take a video of your prototyped interaction.**\*\*
+Videos are on Google Drive: [Lab 1](https://drive.google.com/drive/folders/1-UZNWlaaXBWAfdHco78UJXUNBQaKrdvQ?usp=drive_link)
 
 \*\***Please indicate who you collaborated with on this Lab.**\*\*
+
+Charlotte Lin (hl2575), Jessica Hsiao (dh779), Zoe Tseng (yzt2)
+
 Be generous in acknowledging their contributions! And also recognizing any other influences (e.g. from YouTube, Github, Twitter) that informed your design. 
 
 
