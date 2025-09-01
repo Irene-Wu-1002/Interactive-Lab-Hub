@@ -200,7 +200,11 @@ Design 3: put on an index finger as a ring
 ## Part F. Record
 
 \*\***Take a video of your prototyped interaction.**\*\*
-Videos are on Google Drive: [Lab 1](https://drive.google.com/drive/folders/1-UZNWlaaXBWAfdHco78UJXUNBQaKrdvQ?usp=drive_link)
+For each design, three videos are presented:
+
+* The first one shows someone wearing the device on their wrist. Videos are on Google Drive: [Lab 1](https://drive.google.com/file/d/1k19Eb_AzwOkdqGib6ngVkBXroh1oAK1X/view?usp=drive_link)
+* The second one shows someone wearing the device on their waist. Videos are on Google Drive: [Lab 1](https://drive.google.com/file/d/1P2uAy3tRcriqTgwgDtHuwHF4V8N8J670/view?usp=drive_link)
+* The second one shows someone wearing the device on their finger. Videos are on Google Drive: [Lab 1](https://drive.google.com/file/d/1POT05AWawgyuvhMXoj9c_wg2OGeC4meL/view?usp=drive_link)
 
 \*\***Please indicate who you collaborated with on this Lab.**\*\*
 
