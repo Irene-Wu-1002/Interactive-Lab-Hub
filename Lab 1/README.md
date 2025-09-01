@@ -128,14 +128,14 @@ Try physically acting out the interaction you planned. For now, you can just pre
 
 \*\***Are there things that seemed better on paper than acted out?**\*\*
 
-In the planning stage, we expected users to raise their hands to check the light while running, which seems to be intuitive and easy to perform because it is similar to the act of checking the time on a watch.
-In practice, we found two problems with using a device that emits light. The first one is that the runner would not know when to check the device; as a result, they have to check it regularly. The other problem is that when the user is running, raising their hands to check the light requires extra effort, which distracts them from focusing on running.
+* In the planning stage, we expected users to raise their hands to check the light while running, which seems to be intuitive and easy to perform because it is similar to the act of checking the time on a watch.
+* In practice, we found two problems with using a device that emits light. The first one is that the runner would not know when to check the device; as a result, they have to check it regularly. The other problem is that when the user is running, raising their hands to check the light requires extra effort, which distracts them from focusing on running.
 
 
 \*\***Are there new ideas that occur to you or your collaborator that come up from the acting?**\*\*
 
-1. One solution we came up with is that we could use vibration instead of light, making it effortless for the user to receive feedback from the device. With this type of notification, users can receive information passively rather than keep actively checking their status.
-2. We noticed that placement really matters. Wearing the device on the wrist works fine when you’re not moving much, but during more intense activities like running or cycling, it’s harder to check quickly. An armband or chest strap with a front-facing light could work better for runners since the light would stay in their line of sight and be easier to notice without extra effort.
+* One solution we came up with is that we could use vibration instead of light, making it effortless for the user to receive feedback from the device. With this type of notification, users can receive information passively rather than keep actively checking their status.
+* We noticed that placement really matters. Wearing the device on the wrist works fine when you’re not moving much, but during more intense activities like running or cycling, it’s harder to check quickly. An armband or chest strap with a front-facing light could work better for runners since the light would stay in their line of sight and be easier to notice without extra effort.
 
 
 
@@ -158,7 +158,7 @@ Take a little time to set up the wizarding set-up that allows for someone to rem
 
 \*\***Include your first attempts at recording the set-up video here.**\*\*
 
-The video is on Google Drive: [Lab 1] (https://drive.google.com/drive/folders/1-UZNWlaaXBWAfdHco78UJXUNBQaKrdvQ?usp=drive_link)
+The video is on Google Drive: [Lab 1](https://drive.google.com/drive/folders/1-UZNWlaaXBWAfdHco78UJXUNBQaKrdvQ?usp=drive_link)
 
 Now, change the goal within the same setting, and update the interaction with the paper prototype. 
 
