@@ -271,7 +271,7 @@ Given our previous design, we update the device to have 2 modes.
 
 ![img](https://github.com/Irene-Wu-1002/Interactive-Lab-Hub/blob/Fall2025/Lab%201/images/Part2_Storyboard2.png)
 
-## Part B. Act out the Interaction
+### Part B. Act out the Interaction
 
 \*\***Are there things that seemed better on paper than acted out?**\*\*
 
@@ -302,7 +302,7 @@ We realized there might be some workout/exercises that require equipment or hand
       - Needs to be adjustable for fitting
       - Screen may be slightly smaller than a watch solution
 
-## Part C. Costume the device
+### Part C. Costume the device
 
 \*\***Include sketches of what your devices might look like here.**\*\*
 
@@ -319,7 +319,7 @@ After evaluating the tradeoff we decided to go with a necklace as a wearable dev
 
 - **Concerns** : First, a major concern is data privacy and security issues. Users may raise concern about health and performance data being stored and analyzed by AI. Secondly, as the device is multimodal, some users may find the cues overwhelming or distracting. In a shared or public environment, the cues could be disruptive to others nearby. Last but not least, accessibility barriers may still arise, since not all users respond well to certain feedback modes (e.g. color-blind users with color progress bar, or users with hearing impairment). 
 
-## Part D. Record
+### Part D. Record
 
 \*\***Take videos of your prototyped interaction.**\*\*
 
