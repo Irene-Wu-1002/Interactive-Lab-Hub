@@ -261,6 +261,15 @@ Given our previous design, we update the device to have 2 modes.
 
    **Goal** : The device’s primary goal in group mode is to enhance the social and motivational aspects of training. By providing collective progress indicators and encouraging friendly competition, it strengthens team bonding and keeps participants engaged. It also assists instructors by flagging safety or performance issues, ensuring participants stay in safe zones. Ultimately, the device aims to make workouts more interactive, collaborative, and emotionally rewarding, inspiring participants to push further while maintaining a fun, social atmosphere.
 
+\*\***Include pictures of your storyboards here**\*\*
+
+**Individual Mode**
+
+![img1](https://github.com/Irene-Wu-1002/Interactive-Lab-Hub/blob/Fall2025/Lab%201/images/Part2_Storyboard1.png)
+
+**Group Mode**
+
+![img](https://github.com/Irene-Wu-1002/Interactive-Lab-Hub/blob/Fall2025/Lab%201/images/Part2_Storyboard2.png)
 
 ## Part B. Act out the Interaction
 
@@ -299,6 +308,11 @@ We realized there might be some workout/exercises that require equipment or hand
 
 After evaluating the tradeoff we decided to go with a necklace as a wearable device.
 
+![img3](https://github.com/Irene-Wu-1002/Interactive-Lab-Hub/blob/Fall2025/Lab%201/images/Part2_Sketch1.png)
+![img4](https://github.com/Irene-Wu-1002/Interactive-Lab-Hub/blob/Fall2025/Lab%201/images/Part2_Sketch2.png)
+
+
+
 \*\***What concerns or opportunities are influencing the way you've designed the device to look?**\*\*
 
 - **Opportunities** : The main opportunity we envisioned when designing the device was to enhance the overall workout experience. By prioritizing simplicity and convenience, the device allows users to set up easily and integrate the device seamlessly into their routines. In group mode, the device can also inform the instructors about each participant's status, enabling them to monitor progress and identify when someone needs additional support. Through combining visual, auditory, and haptic cues, the device can adapt individual user preferences and make the experience more engaging. We were hoping that by using multimodality, the accessibility of the device can also be improved, ensuring users with different abilities or preference can engage effectively. In addition, we took multimodality as an opportunity to motivate the users through reinforcing feedback across multiple channels.
@@ -314,4 +328,5 @@ Individual mode: [IDD_Lab1_Part2_Individual.mp4](https://drive.google.com/file/d
 Group mode: [IDD_Lab1_Part2_Group.mp4](https://drive.google.com/file/d/1ozwTyPeyrAnQL-ItFWSgo7sV5inEX97l/view?usp=drive_link)
 
 \*\***Please indicate who you collaborated with on this Lab.**\*\*
+
 Irene Wu (meself - yw2785), Charlotte Lin (hl2575), Jessica Hsiao (dh779), Zoe Tseng (yzt2), Eva Huang (lh764)
