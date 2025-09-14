@@ -191,6 +191,36 @@ Pro Tip: Using tools like [code-server](https://coder.com/docs/code-server/lates
 ## Part G. 
 ## Sketch and brainstorm further interactions and features you would like for your clock for Part 2.
 
+Idea #1: A shared social dining tool that helps hotpot eaters time their food (like meat or veggies) without pulling out phones.
+→ The goal is convenience, fun, and better-timed food.
+
+**Features**
+1. Show countdown of minutes/seconds
+2. When the time is last then 30 seconds, the device's screen would turn yellow to red to notify users. 
+
+![EatTimer](https://github.com/Irene-Wu-1002/Interactive-Lab-Hub/blob/Fall2025/Lab%202/images/IDD_Lab2A_EatTimer.png)
+
+Idea #2: A box with a servo lock that only opens after a set countdown.
+
+**Features**
+1. User presses a large button to activate the countdown
+2. Shows remaining time
+3. Sound/buzzer or flashing LEDs to indicate “treasure unlocked!”
+4. The screen turn waiting into a mini celebration.
+
+![TimeLockedTreasure](https://github.com/Irene-Wu-1002/Interactive-Lab-Hub/blob/Fall2025/Lab%202/images/IDD_Lab2A_TimeLockedTreasure.png)
+
+Idea #3: A device that gently nudges people toward healthier sleep by signaling when bedtime is near and when it has arrived.
+
+**Features**
+1. Set bedtime using a rotary dial, touchscreen, or companion app
+2. Light-Based Notifications:
+   - Yellow Warning Phase: Starts 10–15 minutes before bedtime to prompt winding down.
+   - Red Alert Phase: At bedtime, lamp turns red as a clear visual cue.
+4. Optional Audio Cue: Gentle chime, soft melody, or white noise trigger.
+
+![SleepReminderLamp](https://github.com/Irene-Wu-1002/Interactive-Lab-Hub/blob/Fall2025/Lab%202/images/IDD_Lab2A_SleepReminderLamp.png)
+
 
 # Prep for Part 2
 
