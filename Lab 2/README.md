@@ -197,9 +197,11 @@ Idea #1: A shared social dining tool that helps hotpot eaters time their food (l
 → The goal is convenience, fun, and better-timed food.
 
 **Features**
-1. Show countdown of minutes/seconds
-2. When the time is last then 30 seconds, the device's screen would turn yellow to red to notify users. 
-
+1. The device would show a countdown of minutes/seconds.
+2. When the remaining time is less than 30 seconds, the device's screen would turn yellow to red to notify users.
+3. Users could push a button to reset the timer.
+4. Users could also change the countdown time by clicking the button several times.
+ 
 ![EatTimer](https://github.com/Irene-Wu-1002/Interactive-Lab-Hub/blob/Fall2025/Lab%202/images/IDD_Lab2A_EatTimer.png)
 
 Idea #2: A box with a servo lock that only opens after a set countdown.
