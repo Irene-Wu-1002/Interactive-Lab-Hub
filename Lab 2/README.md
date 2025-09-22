@@ -195,15 +195,39 @@ Pro Tip: Using tools like [code-server](https://coder.com/docs/code-server/lates
 ## Part G. 
 ## Sketch and brainstorm further interactions and features you would like for your clock for Part 2.
 
-Idea: A shared social dining tool that helps hotpot eaters time their food (like meat or veggies) without pulling out phones.
-→ The goal is convenience, fun, and better-timed food.
+**Idea #1: Shared Social Dining Tool for Hotpot Timing**
 
-**Features**
-1. The device would show a countdown of minutes/seconds.
-2. When the remaining time is less than 30 seconds, the device's screen would turn yellow to red to notify users.
-3. Users could push a button to reset the timer.
-4. Users could also change the countdown time by clicking the button several times.
- 
+_**Overview**_
+
+A shared dining device designed to make hotpot or barbecue experiences more convenient, fun, and perfectly timed. The tool helps diners know exactly when their ingredients, like meat, seafood, or vegetables, are ready without needing to check their phones or guess.
+
+
+_**Scenario**_
+
+Imagine sitting at a hotpot or Korean barbecue restaurant with friends. Instead of constantly asking “Is this ready yet?” or pulling out your phone timer, you simply select your ingredient on the device, and it takes care of the timing for you.
+
+
+_**Target Users**_
+
+- Casual diners who don’t know the proper cooking times for different ingredients.
+- Groups of friends or families who want to focus on conversation instead of managing timers.
+
+
+_**Key Functions**_
+
+- Menu Page – Users scroll through ingredient options (beef, shrimp, vegetables, etc.).
+  - Button A: Scroll through the menu to choose the ingredient.
+  - Button B: Confirm selection and move to the countdown page.
+- Countdown Page – Displays a timer specific to the selected ingredient’s ideal cooking time.
+- Exit Countdown Mode – Press buttons A + B simultaneously to stop the timer and return to the menu.
+- Notification – At the end of the countdown, the device displays a clear message indicating the food is ready to eat.
+
+
+_**Goal**_
+- Convenience – No need for phones or manual timing.
+- Fun – Adds a playful, interactive element to the dining experience.
+- Better-Timed Food – Reduces overcooking or undercooking, leading to a tastier meal.
+
 ![EatTimer](https://github.com/Irene-Wu-1002/Interactive-Lab-Hub/blob/Fall2025/Lab%202/images/IDD_Lab2A_EatTimer.png)
 
 
