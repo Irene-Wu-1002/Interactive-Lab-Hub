@@ -67,14 +67,25 @@ menu_items = {
     "Vegan": "2:00"       # 2 minutes
 }
 
+# ---------------------------
+# Global Variables
+# ---------------------------
+
+mode = 0 # 0 for menu, 1 for timer
 selected_index = 0
 
-# --- Create rotation-aware buffer ---
 image = Image.new("RGB", (display.width, display.height))  # 135x240 for rotation=90
 draw = ImageDraw.Draw(image)
 font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 20)
 
+
+# ---------------------------
+# Functions
+# ---------------------------
+
 def draw_menu():
+    global mode, selected_index
+    mode = 0
     draw.rectangle((0, 0, image.width, image.height), fill=0)
 
     y = 10
@@ -86,6 +97,9 @@ def draw_menu():
     display.image(image)
 
 def select_item():
+    global mode, selected_index
+    global buttonA, buttonB
+    
     keys = list(menu_items.keys())
     selected_key = keys[selected_index]
 
@@ -98,6 +112,17 @@ def select_item():
         countdown = int(value)
 
     while countdown >= 0:
+        # check if both buttons are pressed, exit the countdown
+        a_pressed = not buttonA.value
+        b_pressed = not buttonB.value
+
+        # if both pressed → exit countdown
+        if a_pressed and b_pressed:
+            mode = 0
+            selected_index = 0
+            draw_menu()
+            return   # exit function immediately
+            
         draw.rectangle((0, 0, image.width, image.height), fill=0)
 
         # Format as MM:SS
@@ -129,19 +154,31 @@ while True:
     a_pressed = (buttonA.value == False)
     b_pressed = (buttonB.value == False)
 
-    if a_pressed:
-        selected_index = (selected_index + 1) % len(menu_items)
-        draw_menu()
-        time.sleep(0.2)  # debounce delay
-
-    if b_pressed:
-        select_item()
-        time.sleep(0.2)  # debounce delay
-
     if a_pressed and b_pressed:
         draw.rectangle((0, 0, display.width, display.height), outline=0, fill=0)
         draw.text((10, 100), "Goodbye!", font=font, fill=(255, 0, 0))
         display.image(image)
         time.sleep(1)
         break
+            
+    if a_pressed:
+        if mode == 0:
+            selected_index = (selected_index + 1) % len(menu_items)
+            draw_menu()
+            time.sleep(0.3)  # debounce delay
+        else:
+            selected_index = 0
+            draw_menu()
+            time.sleep(0.3)  # debounce delay
+
+    if b_pressed:
+        if mode == 0:
+            mode = 1
+            select_item()
+            time.sleep(0.3)  # debounce delay
+        else:
+            mode = 0
+            selected_index = 0
+            draw_menu()
+            time.sleep(0.3)  # debounce delay
 
