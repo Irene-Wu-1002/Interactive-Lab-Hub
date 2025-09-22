@@ -237,6 +237,8 @@ Jessica and I developed a food countdown device. Users can choose any ingredient
 
 \*\*\***Take a video of your PiClock.**\*\*\*
 
+[Demo Video](https://drive.google.com/file/d/16Lf5ZP8zQZFntU9poBrLktVZQk7YwMLd/view?usp=drive_link)
+
 After you edit and work on the scripts for Lab 2, the files should be upload back to your own GitHub repo! You can push to your personal github repo by adding the files here, commiting and pushing.
 
 ```
