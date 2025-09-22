@@ -1,7 +1,9 @@
 # Interactive Prototyping: The Clock of Pi
 **NAMES OF COLLABORATORS HERE**
 
-Jessica Hsiao (dh779), Irene Wu (yw2785)
+Irene Wu (Me: yw2785): Come up with idea, storyboards, developed draw_menu() and while loop. 
+Jessica Hsiao (dh779): Come up with idea, story boards, developed select_item() and countdown. 
+
 
 Does it feel like time is moving strangely during this semester?
 
