@@ -230,6 +230,7 @@ Please sketch/diagram your clock idea. (Try using a [Verplank diagram](https://c
 
 \*\*\***A copy of your code should be in your Lab 2 Github repo.**\*\*\*
 
+Jessica and I developed a food countdown device. Users can choose any ingredient in the menu page. When users press "Confirm Button", it would start counting down. When the timer is up, it would notify users by specific words.
 
 ## Assignment that was formerly Part F. 
 ## Make a short video of your modified barebones PiClock
