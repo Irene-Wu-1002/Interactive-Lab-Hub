@@ -82,6 +82,10 @@ You can also play audio files directly with `aplay filename`. Try typing `aplay 
 \*\***Write your own shell file to use your favorite of these TTS engines to have your Pi greet you by name.**\*\*
 (This shell file should be saved to your own repo for this lab.)
 
+File: Lab 3/speech-scripts/greet_me.sh
+
+https://github.com/Irene-Wu-1002/Interactive-Lab-Hub/blob/Fall2025/Lab%203/speech-scripts/greet_me.sh
+
 ---
 Bonus:
 [Piper](https://github.com/rhasspy/piper) is another fast neural based text to speech package for raspberry pi which can be installed easily through python with:
@@ -146,6 +150,12 @@ and
 python faster_whisper_try.py
 ```
 \*\***Write your own shell file that verbally asks for a numerical based input (such as a phone number, zipcode, number of pets, etc) and records the answer the respondent provides.**\*\*
+
+**Ask number of pets**
+
+File: Lab 3/speech-scripts/ask_number.sh
+
+https://github.com/Irene-Wu-1002/Interactive-Lab-Hub/blob/Fall2025/Lab%203/speech-scripts/ask_number.sh
 
 ### 🤖 NEW: AI-Powered Conversations with Ollama
 
@@ -214,6 +224,10 @@ answer = ask_ai("How should I greet users?")
 
 \*\***Try creating a simple voice interaction that combines speech recognition, Ollama processing, and text-to-speech output. Document what you built and how users responded to it.**\*\*
 
+file: Lab 3/ollama_voice_demo.py
+
+https://github.com/Irene-Wu-1002/Interactive-Lab-Hub/blob/bf868fca763b423f1a7d349c37861aea52d6bf8b/Lab%203/ollama_voice_demo.py
+
 ### Serving Pages
 
 In Lab 1, we served a webpage with flask. In this lab, you may find it useful to serve a webpage for the controller on a remote device. Here is a simple example of a webserver.
@@ -238,15 +252,52 @@ Storyboard and/or use a Verplank diagram to design a speech-enabled device. (Stu
 
 \*\***Post your storyboard and diagram here.**\*\*
 
+**Verplank diagram**
+![img](https://github.com/Irene-Wu-1002/Interactive-Lab-Hub/blob/Fall2025/Lab%203/images/FairyMate.png)
+
 Write out what you imagine the dialogue to be. Use cards, post-its, or whatever method helps you develop alternatives or group responses. 
 
 \*\***Please describe and document your process.**\*\*
+
+**Idea**: Nowadays, individuals are more prone to mental health challenges, not only because they are constantly exposed to overwhelming amounts of information, but also because modern life often brings people physically closer yet emotionally distant. To address this, we need a way for individuals to express their feelings, whether positive or negative.
+
+Our solution is a device called "Fairy Mate" — a friendly companion that allows individuals to share whatever is on their minds.
+
+**Scenario**
+1. When an individual returns home, Fairy Mate greets them and asks, “How was your day?”
+2. The individual can freely share their thoughts and emotions.
+3. Fairy Mate provides emotional support and, if possible, practical suggestions.
+4. After the conversation, Fairy Mate creates a journal entry to help preserve the memory and track emotional patterns over time.
+
+**Function**
+1. Emotion Detection – Detects movement, environmental sounds, and biological signals to sense the user’s emotional state when they are at home.
+2. Emotional Support – Offers comfort, encouragement, and solutions when needed.
+3. Personal Journaling – Automatically creates a journal entry summarizing the user’s feelings and experiences for future reflection.
+
 
 ### Acting out the dialogue
 
 Find a partner, and *without sharing the script with your partner* try out the dialogue you've designed, where you (as the device designer) act as the device you are designing.  Please record this interaction (for example, using Zoom's record feature).
 
 \*\***Describe if the dialogue seemed different than what you imagined when it was acted out, and how.**\*\*
+
+Video: https://drive.google.com/file/d/1qbs6NWLszIRgVU5eu93dBdbvuezS9Y7g/view?usp=drive_link
+
+Fairy Mate: "Hi there! I’m your magical friend. I noticed you seem a bit down."
+
+Person: "Yeah… I’ve been feeling sad lately."
+
+Fairy Mate: "Thank you for telling me. I’m here to listen. Want to share more about what’s on your mind?"
+
+Person: "Well… I just feel overwhelmed."
+
+Fairy Mate: "I’m sorry you’re feeling this way. Let’s take a deep breath together. "
+
+Fairy Mate: "Would you like me to give you a few gentle suggestions to feel better, or just stay here quietly with you?"
+
+Person: "Let’s try the suggestions."
+
+Fairy Mate: "Great! How about writing down what’s bothering you or taking a short walk? I’ll cheer you on!"
 
 ### Wizarding with the Pi (optional)
 In the [demo directory](./demo), you will find an example Wizard of Oz project. In that project, you can see how audio and sensor data is streamed from the Pi to a wizard controller that runs in the browser.  You may use this demo code as a template. By running the `app.py` script, you can see how audio and sensor data (Adafruit MPU-6050 6-DoF Accel and Gyro Sensor) is streamed from the Pi to a wizard controller that runs in the browser `http://<YouPiIPAddress>:5000`. You can control what the system says from the controller as well!
@@ -306,6 +357,10 @@ Answer the following:
 ### How could you use your system to create a dataset of interaction? What other sensing modalities would make sense to capture?
 
 \*\**your answer here*\*\*
+
+
+
+
 
 
 
