@@ -259,6 +259,22 @@ Write out what you imagine the dialogue to be. Use cards, post-its, or whatever 
 
 \*\***Please describe and document your process.**\*\*
 
+**Idea**: Nowadays, individuals are more prone to mental health challenges, not only because they are constantly exposed to overwhelming amounts of information, but also because modern life often brings people physically closer yet emotionally distant. To address this, we need a way for individuals to express their feelings, whether positive or negative.
+
+Our solution is a device called "Fairy Mate" — a friendly companion that allows individuals to share whatever is on their minds.
+
+**Scenario**
+1. When an individual returns home, Fairy Mate greets them and asks, “How was your day?”
+2. The individual can freely share their thoughts and emotions.
+3. Fairy Mate provides emotional support and, if possible, practical suggestions.
+4. After the conversation, Fairy Mate creates a journal entry to help preserve the memory and track emotional patterns over time.
+
+**Function**
+1. Emotion Detection – Detects movement, environmental sounds, and biological signals to sense the user’s emotional state when they are at home.
+2. Emotional Support – Offers comfort, encouragement, and solutions when needed.
+3. Personal Journaling – Automatically creates a journal entry summarizing the user’s feelings and experiences for future reflection.
+
+
 ### Acting out the dialogue
 
 Find a partner, and *without sharing the script with your partner* try out the dialogue you've designed, where you (as the device designer) act as the device you are designing.  Please record this interaction (for example, using Zoom's record feature).
@@ -341,6 +357,7 @@ Answer the following:
 ### How could you use your system to create a dataset of interaction? What other sensing modalities would make sense to capture?
 
 \*\**your answer here*\*\*
+
 
 
 
