@@ -84,6 +84,8 @@ You can also play audio files directly with `aplay filename`. Try typing `aplay 
 
 File: Lab 3/speech-scripts/greet_me.sh
 
+https://github.com/Irene-Wu-1002/Interactive-Lab-Hub/blob/Fall2025/Lab%203/speech-scripts/greet_me.sh
+
 ---
 Bonus:
 [Piper](https://github.com/rhasspy/piper) is another fast neural based text to speech package for raspberry pi which can be installed easily through python with:
@@ -149,7 +151,11 @@ python faster_whisper_try.py
 ```
 \*\***Write your own shell file that verbally asks for a numerical based input (such as a phone number, zipcode, number of pets, etc) and records the answer the respondent provides.**\*\*
 
+**Ask number of pets**
+
 File: Lab 3/speech-scripts/ask_number.sh
+
+https://github.com/Irene-Wu-1002/Interactive-Lab-Hub/blob/Fall2025/Lab%203/speech-scripts/ask_number.sh
 
 ### 🤖 NEW: AI-Powered Conversations with Ollama
 
@@ -217,6 +223,10 @@ answer = ask_ai("How should I greet users?")
 **📖 Complete Setup Guide**: See `OLLAMA_SETUP.md` for detailed instructions, troubleshooting, and advanced usage!
 
 \*\***Try creating a simple voice interaction that combines speech recognition, Ollama processing, and text-to-speech output. Document what you built and how users responded to it.**\*\*
+
+file: Lab 3/ollama_voice_demo.py
+
+https://github.com/Irene-Wu-1002/Interactive-Lab-Hub/blob/bf868fca763b423f1a7d349c37861aea52d6bf8b/Lab%203/ollama_voice_demo.py
 
 ### Serving Pages
 
@@ -313,6 +323,7 @@ Answer the following:
 ### How could you use your system to create a dataset of interaction? What other sensing modalities would make sense to capture?
 
 \*\**your answer here*\*\*
+
 
 
 
