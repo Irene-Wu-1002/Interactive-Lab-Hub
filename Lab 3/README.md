@@ -1,263 +1,46 @@
 # Chatterboxes
 **NAMES OF COLLABORATORS HERE**
-[![Watch the video](https://user-images.githubusercontent.com/1128669/135009222-111fe522-e6ba-46ad-b6dc-d1633d21129c.png)](https://www.youtube.com/embed/Q8FWzLMobx0?start=19)
 
-In this lab, we want you to design interaction with a speech-enabled device--something that listens and talks to you. This device can do anything *but* control lights (since we already did that in Lab 1).  First, we want you first to storyboard what you imagine the conversational interaction to be like. Then, you will use wizarding techniques to elicit examples of what people might say, ask, or respond.  We then want you to use the examples collected from at least two other people to inform the redesign of the device.
+Jessica Hsiao(dh779), Irene Wu (yw2785)
+
+In this lab, we designed interaction with a speech-enabled device--something that listens and talks to users. First, we storyboard what we imagine the conversational interaction to be like. Then, we will use wizarding techniques to elicit examples of what people might say, ask, or respond.  Then, we use the examples collected from at least two other people to inform the redesign of the device.
 
 We will focus on **audio** as the main modality for interaction to start; these general techniques can be extended to **video**, **haptics** or other interactive mechanisms in the second part of the Lab.
 
-## Prep for Part 1: Get the Latest Content and Pick up Additional Parts 
-
-Please check instructions in [prep.md](prep.md) and complete the setup before class on Wednesday, Sept 23rd.
-
-### Pick up Web Camera If You Don't Have One
-
-Students who have not already received a web camera will receive their [Logitech C270 Webcam](https://www.amazon.com/Logitech-Desktop-Widescreen-Calling-Recording/dp/B004FHO5Y6/ref=sr_1_3?crid=W5QN79TK8JM7&dib=eyJ2IjoiMSJ9.FB-davgIQ_ciWNvY6RK4yckjgOCrvOWOGAG4IFaH0fczv-OIDHpR7rVTU8xj1iIbn_Aiowl9xMdeQxceQ6AT0Z8Rr5ZP1RocU6X8QSbkeJ4Zs5TYqa4a3C_cnfhZ7_ViooQU20IWibZqkBroF2Hja2xZXoTqZFI8e5YnF_2C0Bn7vtBGpapOYIGCeQoXqnV81r2HypQNUzFQbGPh7VqjqDbzmUoloFA2-QPLa5lOctA.L5ztl0wO7LqzxrIqDku9f96L9QrzYCMftU_YeTEJpGA&dib_tag=se&keywords=webcam%2Bc270&qid=1758416854&sprefix=webcam%2Bc270%2Caps%2C125&sr=8-3&th=1) and bluetooth speaker on Wednesday at the beginning of lab. If you cannot make it to class this week, please contact the TAs to ensure you get these. 
-
-### Get the Latest Content
-
-As always, pull updates from the class Interactive-Lab-Hub to both your Pi and your own GitHub repo. There are 2 ways you can do so:
-
-**\[recommended\]**Option 1: On the Pi, `cd` to your `Interactive-Lab-Hub`, pull the updates from upstream (class lab-hub) and push the updates back to your own GitHub repo. You will need the *personal access token* for this.
-
-```
-pi@ixe00:~$ cd Interactive-Lab-Hub
-pi@ixe00:~/Interactive-Lab-Hub $ git pull upstream Fall2025
-pi@ixe00:~/Interactive-Lab-Hub $ git add .
-pi@ixe00:~/Interactive-Lab-Hub $ git commit -m "get lab3 updates"
-pi@ixe00:~/Interactive-Lab-Hub $ git push
-```
-
-Option 2: On your your own GitHub repo, [create pull request](https://github.com/FAR-Lab/Developing-and-Designing-Interactive-Devices/blob/2022Fall/readings/Submitting%20Labs.md) to get updates from the class Interactive-Lab-Hub. After you have latest updates online, go on your Pi, `cd` to your `Interactive-Lab-Hub` and use `git pull` to get updates from your own GitHub repo.
-
 ## Part 1.
-### Setup 
 
-Activate your virtual environment
+### Text to Speech
 
-```
-pi@ixe00:~$ cd Interactive-Lab-Hub
-pi@ixe00:~/Interactive-Lab-Hub $ cd Lab\ 3
-pi@ixe00:~/Interactive-Lab-Hub/Lab 3 $ python3 -m venv .venv
-pi@ixe00:~/Interactive-Lab-Hub $ source .venv/bin/activate
-(.venv)pi@ixe00:~/Interactive-Lab-Hub $ 
-```
-
-Run the setup script
-```(.venv)pi@ixe00:~/Interactive-Lab-Hub $ pip install -r requirements.txt  ```
-
-Next, run the setup script to install additional text-to-speech dependencies:
-```
-(.venv)pi@ixe00:~/Interactive-Lab-Hub/Lab 3 $ ./setup.sh
-```
-
-### Text to Speech 
-
-In this part of lab, we are going to start peeking into the world of audio on your Pi! 
-
-We will be using the microphone and speaker on your webcamera. In the directory is a folder called `speech-scripts` containing several shell scripts. `cd` to the folder and list out all the files by `ls`:
-
-```
-pi@ixe00:~/speech-scripts $ ls
-Download        festival_demo.sh  GoogleTTS_demo.sh  pico2text_demo.sh
-espeak_demo.sh  flite_demo.sh     lookdave.wav
-```
-
-You can run these shell files `.sh` by typing `./filename`, for example, typing `./espeak_demo.sh` and see what happens. Take some time to look at each script and see how it works. You can see a script by typing `cat filename`. For instance:
-
-```
-pi@ixe00:~/speech-scripts $ cat festival_demo.sh 
-#from: https://elinux.org/RPi_Text_to_Speech_(Speech_Synthesis)#Festival_Text_to_Speech
-```
-You can test the commands by running
-```
-echo "Just what do you think you're doing, Dave?" | festival --tts
-```
-
-Now, you might wonder what exactly is a `.sh` file? 
-Typically, a `.sh` file is a shell script which you can execute in a terminal. The example files we offer here are for you to figure out the ways to play with audio on your Pi!
-
-You can also play audio files directly with `aplay filename`. Try typing `aplay lookdave.wav`.
-
-\*\***Write your own shell file to use your favorite of these TTS engines to have your Pi greet you by name.**\*\*
-(This shell file should be saved to your own repo for this lab.)
+\*\***My own shell file to use my favorite of these TTS engines to have my Pi greet you by name.**\*\*
 
 File: Lab 3/speech-scripts/greet_me.sh
 
 https://github.com/Irene-Wu-1002/Interactive-Lab-Hub/blob/Fall2025/Lab%203/speech-scripts/greet_me.sh
-
----
-Bonus:
-[Piper](https://github.com/rhasspy/piper) is another fast neural based text to speech package for raspberry pi which can be installed easily through python with:
-```
-pip install piper-tts
-```
-and used from the command line. Running the command below the first time will download the model, concurrent runs will be faster. 
-```
-echo 'Welcome to the world of speech synthesis!' | piper \
-  --model en_US-lessac-medium \
-  --output_file welcome.wav
-```
-Check the file that was created by running `aplay welcome.wav`. Many more languages are supported and audio can be streamed dirctly to an audio output, rather than into an file by:
-
-```
-echo 'This sentence is spoken first. This sentence is synthesized while the first sentence is spoken.' | \
-  piper --model en_US-lessac-medium --output-raw | \
-  aplay -r 22050 -f S16_LE -t raw -
-```
   
 ### Speech to Text
 
-Next setup speech to text. We are using a speech recognition engine, [Vosk](https://alphacephei.com/vosk/), which is made by researchers at Carnegie Mellon University. Vosk is amazing because it is an offline speech recognition engine; that is, all the processing for the speech recognition is happening onboard the Raspberry Pi. 
+\*\***Write my own shell file that verbally asks for a numerical based input (such as a phone number, zipcode, number of pets, etc) and records the answer the respondent provides.**\*\*
 
-Make sure you're running in your virtual environment with the dependencies already installed:
-```
-source .venv/bin/activate
-```
-
-Test if vosk works by transcribing text:
-
-```
-vosk-transcriber -i recorded_mono.wav -o test.txt
-```
-
-You can use vosk with the microphone by running 
-```
-python test_microphone.py -m en
-```
-
----
-Bonus:
-[Whisper](https://openai.com/index/whisper/) is a neural network–based speech-to-text (STT) model developed and open-sourced by OpenAI. Compared to Vosk, Whisper generally achieves higher accuracy, particularly on noisy audio and diverse accents. It is available in multiple model sizes; for edge devices such as the Raspberry Pi 5 used in this class, the tiny.en model runs with reasonable latency even without a GPU.
-
-By contrast, Vosk is more lightweight and optimized for running efficiently on low-power devices like the Raspberry Pi. The choice between Whisper and Vosk depends on your scenario: if you need higher accuracy and can afford slightly more compute, Whisper is preferable; if your priority is minimal resource usage, Vosk may be a better fit.
-
-In this class, we provide two Whisper options: A quantized 8-bit faster-whisper model for speed, and the standard Whisper model. Try them out and compare the trade-offs.
-
-Make sure you're in the Lab 3 directory with your virtual environment activated:
-```
-cd ~/Interactive-Lab-Hub/Lab\ 3/speech-scripts
-source ../.venv/bin/activate
-```
-
-Then test the Whisper models:
-```
-python whisper_try.py
-```
-and
-
-```
-python faster_whisper_try.py
-```
-\*\***Write your own shell file that verbally asks for a numerical based input (such as a phone number, zipcode, number of pets, etc) and records the answer the respondent provides.**\*\*
-
-**Ask number of pets**
+Ask number of pets
 
 File: Lab 3/speech-scripts/ask_number.sh
 
 https://github.com/Irene-Wu-1002/Interactive-Lab-Hub/blob/Fall2025/Lab%203/speech-scripts/ask_number.sh
 
-### 🤖 NEW: AI-Powered Conversations with Ollama
-
-Want to add intelligent conversation capabilities to your voice projects? **Ollama** lets you run AI models locally on your Raspberry Pi for sophisticated dialogue without requiring internet connectivity!
-
-#### Quick Start with Ollama
-
-**Installation** (takes ~5 minutes):
-```bash
-# Install Ollama
-curl -fsSL https://ollama.com/install.sh | sh
-
-# Download recommended model for Pi 5
-ollama pull phi3:mini
-
-# Install system dependencies for audio (required for pyaudio)
-sudo apt-get update
-sudo apt-get install -y portaudio19-dev python3-dev
-
-# Create separate virtual environment for Ollama (due to pyaudio conflicts)
-cd ollama/
-python3 -m venv ollama_venv
-source ollama_venv/bin/activate
-
-# Install Python dependencies in separate environment
-pip install -r ollama_requirements.txt
-```
-#### Ready-to-Use Scripts
-
-We've created three Ollama integration scripts for different use cases:
-
-**1. Basic Demo** - Learn how Ollama works:
-```bash
-python3 ollama_demo.py
-```
-
-**2. Voice Assistant** - Full speech-to-text + AI + text-to-speech:
-```bash
-python3 ollama_voice_assistant.py
-```
-
-**3. Web Interface** - Beautiful web-based chat with voice options:
-```bash
-python3 ollama_web_app.py
-# Then open: http://localhost:5000
-```
-
-#### Integration in Your Projects
-
-Simple example to add AI to any project:
-```python
-import requests
-
-def ask_ai(question):
-    response = requests.post(
-        "http://localhost:11434/api/generate",
-        json={"model": "phi3:mini", "prompt": question, "stream": False}
-    )
-    return response.json().get('response', 'No response')
-
-# Use it anywhere!
-answer = ask_ai("How should I greet users?")
-```
-
-**📖 Complete Setup Guide**: See `OLLAMA_SETUP.md` for detailed instructions, troubleshooting, and advanced usage!
-
-\*\***Try creating a simple voice interaction that combines speech recognition, Ollama processing, and text-to-speech output. Document what you built and how users responded to it.**\*\*
+\*\***Try creating a simple voice interaction that combines speech recognition, Ollama processing, and text-to-speech output. Document what I built and how users responded to it.**\*\*
 
 file: Lab 3/ollama_voice_demo.py
 
 https://github.com/Irene-Wu-1002/Interactive-Lab-Hub/blob/bf868fca763b423f1a7d349c37861aea52d6bf8b/Lab%203/ollama_voice_demo.py
 
-### Serving Pages
-
-In Lab 1, we served a webpage with flask. In this lab, you may find it useful to serve a webpage for the controller on a remote device. Here is a simple example of a webserver.
-
-```
-pi@ixe00:~/Interactive-Lab-Hub/Lab 3 $ python server.py
- * Serving Flask app "server" (lazy loading)
- * Environment: production
-   WARNING: This is a development server. Do not use it in a production deployment.
-   Use a production WSGI server instead.
- * Debug mode: on
- * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
- * Restarting with stat
- * Debugger is active!
- * Debugger PIN: 162-573-883
-```
-From a remote browser on the same network, check to make sure your webserver is working by going to `http://<YourPiIPAddress>:5000`. You should be able to see "Hello World" on the webpage.
 
 ### Storyboard
 
 Storyboard and/or use a Verplank diagram to design a speech-enabled device. (Stuck? Make a device that talks for dogs. If that is too stupid, find an application that is better than that.) 
 
-\*\***Post your storyboard and diagram here.**\*\*
-
 **Verplank diagram**
 ![img](https://github.com/Irene-Wu-1002/Interactive-Lab-Hub/blob/Fall2025/Lab%203/images/FairyMate.png)
 
-Write out what you imagine the dialogue to be. Use cards, post-its, or whatever method helps you develop alternatives or group responses. 
-
-\*\***Please describe and document your process.**\*\*
 
 **Idea**: Nowadays, individuals are more prone to mental health challenges, not only because they are constantly exposed to overwhelming amounts of information, but also because modern life often brings people physically closer yet emotionally distant. To address this, we need a way for individuals to express their feelings, whether positive or negative.
 
@@ -277,72 +60,100 @@ Our solution is a device called "Fairy Mate" — a friendly companion that allow
 
 ### Acting out the dialogue
 
-Find a partner, and *without sharing the script with your partner* try out the dialogue you've designed, where you (as the device designer) act as the device you are designing.  Please record this interaction (for example, using Zoom's record feature).
-
-\*\***Describe if the dialogue seemed different than what you imagined when it was acted out, and how.**\*\*
-
 Video: https://drive.google.com/file/d/1qbs6NWLszIRgVU5eu93dBdbvuezS9Y7g/view?usp=drive_link
+
+**Difference between imagined and acted out**
 
 Although I hadn’t explained to my friend how to use it beforehand, the conversation flowed naturally, and we were able to share real emotions during the exchange. I think it worked well because the Fairy Mate had good prompts that helped guide the discussion and made it feel caring and supportive. Even without much preparation, the interaction felt meaningful and genuine.
 
-### Wizarding with the Pi (optional)
-In the [demo directory](./demo), you will find an example Wizard of Oz project. In that project, you can see how audio and sensor data is streamed from the Pi to a wizard controller that runs in the browser.  You may use this demo code as a template. By running the `app.py` script, you can see how audio and sensor data (Adafruit MPU-6050 6-DoF Accel and Gyro Sensor) is streamed from the Pi to a wizard controller that runs in the browser `http://<YouPiIPAddress>:5000`. You can control what the system says from the controller as well!
-
-\*\***Describe if the dialogue seemed different than what you imagined, or when acted out, when it was wizarded, and how.**\*\*
-
 # Lab 3 Part 2
-
-For Part 2, you will redesign the interaction with the speech-enabled device using the data collected, as well as feedback from part 1.
 
 ## Prep for Part 2
 
 1. What are concrete things that could use improvement in the design of your device? For example: wording, timing, anticipation of misunderstandings...
+
+- Wording: We think instead of always offering suggestions or giving emotional support, Fairy Mate could first confirm the user’s emotional tone.
+- Timing:
+  - Fairy Mate could pause a bit longer after a person speaks, allowing natural reflection before responding.
+  - It might also recognize when the user wants to end the conversation and wrap up gently.
+
+
 2. What are other modes of interaction _beyond speech_ that you might also use to clarify how to interact?
+
+To make Fairy Mate more intuitive and engaging, we incorporated additional interaction modes beyond speech. These include touch-based controls and visual feedback, which help users understand how to interact with the device and choose the kind of support they need.
+
+**Mode Division**
+
+The interaction is divided into two main modes:
+
+- Emotional Support Mode
+- Solution Support Mode
+
+These modes allow users to choose between receiving empathetic emotional comfort or practical problem-solving guidance, depending on what they need at the moment.
+
+**Touch Interaction**
+
+We use the Adafruit MPR121 capacitive touch sensor to let users navigate between modes by tapping numbered touch pads made from copper foil.
+
+- Pads 1–5: Emotional Support: Provides empathetic, comforting responses. Fairy Mate listens and validates the user’s emotions without rushing to offer solutions. Example: “I hear you. That sounds really tough. Would you like to take a deep breath together?”
+- Pads 6–10: Solution Support: Offers practical suggestions, motivation, or mindfulness techniques to help manage stress. Example: “Let’s think of one small thing you could do right now to feel better. Maybe take a short walk?”
+
+**Visual Interaction**
+
+To clarify which mode is active, Fairy Mate uses color-coded visual feedback on its screen or ambient lighting:
+
+- Blue Light = Emotional Support Mode
+- Green Light = Solution Support Mode
+
+This visual cue helps users instantly recognize the device’s current mode and ensures smoother, more intuitive interaction — even without spoken instructions.
+
+
 3. Make a new storyboard, diagram and/or script based on these reflections.
 
-## Prototype your system
+![image](https://github.com/Irene-Wu-1002/Interactive-Lab-Hub/blob/88dc1f0158ca6c594c530d43e8107a38beb3d578/Lab%203/images/Storyboard_New.png)
 
-The system should:
-* use the Raspberry Pi 
-* use one or more sensors
-* require participants to speak to it. 
+## Demo
 
-*Document how the system works*
+[Demo Video](https://drive.google.com/drive/u/0/folders/1I0tN1MeywTAgg3vLXSNYWh-553YHKBoO)
 
-*Include videos or screencaptures of both the system and the controller.*
-
-<details>
-  <summary><strong>Submission Cleanup Reminder (Click to Expand)</strong></summary>
-  
-  **Before submitting your README.md:**
-  - This readme.md file has a lot of extra text for guidance.
-  - Remove all instructional text and example prompts from this file.
-  - You may either delete these sections or use the toggle/hide feature in VS Code to collapse them for a cleaner look.
-  - Your final submission should be neat, focused on your own work, and easy to read for grading.
-  
-  This helps ensure your README.md is clear professional and uniquely yours!
-</details>
-
-## Test the system
-Try to get at least two people to interact with your system. (Ideally, you would inform them that there is a wizard _after_ the interaction, but we recognize that can be hard.)
-
-Answer the following:
+## Test the system & Questions
 
 ### What worked well about the system and what didn't?
-\*\**your answer here*\*\*
+
+1. The color-coded modes (blue for Emotional Support and green for Solution Support) made it easy to recognize the device’s state.
+2. The device could provide more personalized feedback based on tone or emotional cues, rather than relying only on preset responses.
+3. Adding clearer visual or sound cues for when the device is “listening” versus “processing” would also make the interaction feel more intuitive.
+
 
 ### What worked well about the controller and what didn't?
 
-\*\**your answer here*\*\*
+1. The touch sensor controller worked well in providing a simple and intuitive way for users to interact with Fairy Mate.
+2. The use of color feedback, blue for Emotional Support and green for Solution Support, clearly indicated which mode was active, helping users feel confident that their input was recognized.
+3. The sensitivity of the touch sensor sometimes caused accidental activations or missed touches, especially if the user’s finger didn’t make full contact with the pad.
+4. Because the pads were numbered rather than labeled with words or icons, some users had to remember which numbers corresponded to each mode.
+
 
 ### What lessons can you take away from the WoZ interactions for designing a more autonomous version of the system?
 
-\*\**your answer here*\*\*
-
+To train a more autonomous version, Fairy Mate could record anonymized data from real user interactions, such as voice input, selected touch modes, response timing, and user reactions (e.g., facial expressions, tone of voice, or posture changes). This dataset could be labeled by emotional state (e.g., sad, stressed, calm) and type of support chosen (emotional vs. solution). By analyzing patterns in how users respond to certain prompts or tones, the system could learn to adjust its responses dynamically.
 
 ### How could you use your system to create a dataset of interaction? What other sensing modalities would make sense to capture?
 
-\*\**your answer here*\*\*
+To train a more autonomous version, Fairy Mate could record anonymized data from real user interactions, such as voice input, selected touch modes, response timing, and user reactions (e.g., facial expressions, tone of voice, or posture changes). This dataset could be labeled by emotional state (e.g., sad, stressed, calm) and type of support chosen (emotional vs. solution). By analyzing patterns in how users respond to certain prompts or tones, the system could learn to adjust its responses dynamically.
+
+To make Fairy Mate more emotionally intelligent, the following sensing modalities would be valuable:
+
+**Microphone Audio Analysis**: Detect vocal tone, stress, or hesitation to infer emotional state.
+
+**Facial Expression Recognitio**n: Use a camera to sense mood through smiles, frowns, or eye contact.
+
+**Body Motion Sensors (Accelerometer / IMU)**: Identify restlessness, fatigue, or relaxation through movement.
+
+**Environmental Sensors**: Measure lighting or sound levels to adjust tone or suggest activities (e.g., “It’s quiet and dark — maybe it’s time to rest”).
+
+**Touch Pressure or Duration**: Understand emotional intensity from how long or firmly a user touches the sensor.
+
+
 
 
 
