@@ -283,21 +283,7 @@ Find a partner, and *without sharing the script with your partner* try out the d
 
 Video: https://drive.google.com/file/d/1qbs6NWLszIRgVU5eu93dBdbvuezS9Y7g/view?usp=drive_link
 
-Fairy Mate: "Hi there! I’m your magical friend. I noticed you seem a bit down."
-
-Person: "Yeah… I’ve been feeling sad lately."
-
-Fairy Mate: "Thank you for telling me. I’m here to listen. Want to share more about what’s on your mind?"
-
-Person: "Well… I just feel overwhelmed."
-
-Fairy Mate: "I’m sorry you’re feeling this way. Let’s take a deep breath together. "
-
-Fairy Mate: "Would you like me to give you a few gentle suggestions to feel better, or just stay here quietly with you?"
-
-Person: "Let’s try the suggestions."
-
-Fairy Mate: "Great! How about writing down what’s bothering you or taking a short walk? I’ll cheer you on!"
+Although I hadn’t explained to my friend how to use it beforehand, the conversation flowed naturally, and we were able to share real emotions during the exchange. I think it worked well because the Fairy Mate had good prompts that helped guide the discussion and made it feel caring and supportive. Even without much preparation, the interaction felt meaningful and genuine.
 
 ### Wizarding with the Pi (optional)
 In the [demo directory](./demo), you will find an example Wizard of Oz project. In that project, you can see how audio and sensor data is streamed from the Pi to a wizard controller that runs in the browser.  You may use this demo code as a template. By running the `app.py` script, you can see how audio and sensor data (Adafruit MPU-6050 6-DoF Accel and Gyro Sensor) is streamed from the Pi to a wizard controller that runs in the browser `http://<YouPiIPAddress>:5000`. You can control what the system says from the controller as well!
@@ -357,6 +343,7 @@ Answer the following:
 ### How could you use your system to create a dataset of interaction? What other sensing modalities would make sense to capture?
 
 \*\**your answer here*\*\*
+
 
 
 
