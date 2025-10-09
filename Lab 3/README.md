@@ -1,131 +1,324 @@
 # Chatterboxes
-**NAMES OF COLLABORATORS HERE**
 
-Jessica Hsiao(dh779), Irene Wu (yw2785)
+Collaborator: Jessica Hsiao(dh779), Irene Wu (yw2785)
 
-In this lab, we designed interaction with a speech-enabled device--something that listens and talks to users. First, we storyboard what we imagine the conversational interaction to be like. Then, we will use wizarding techniques to elicit examples of what people might say, ask, or respond.  Then, we use the examples collected from at least two other people to inform the redesign of the device.
 
-We will focus on **audio** as the main modality for interaction to start; these general techniques can be extended to **video**, **haptics** or other interactive mechanisms in the second part of the Lab.
+---
 
-## Part 1.
+## 🧠 Overview
 
-### Text to Speech
 
-\*\***My own shell file to use my favorite of these TTS engines to have my Pi greet you by name.**\*\*
+In this lab, we designed **interactions with a speech-enabled device** — something that *listens* and *talks* to users.
+
+1. We first storyboarded how the conversation might flow.  
+2. Then, we used *wizarding techniques* to collect real examples of dialogue from other people.  
+3. Finally, we used those examples to **redesign** our conversational device.
+
+
+> 💬 Focus: **Audio as the main modality** (extendable later to video, haptics, or other interactive mechanisms).
+
+
+---
+
+## Part 0. Preparation, Setup & Practice
+
+<details>
+  <summary>Text to Speech</summary>
+
+  ### Text to Speech 
+
+In this part of lab, we are going to start peeking into the world of audio on your Pi! 
+
+We will be using the microphone and speaker on your webcamera. In the directory is a folder called `speech-scripts` containing several shell scripts. `cd` to the folder and list out all the files by `ls`:
+
+```
+pi@ixe00:~/speech-scripts $ ls
+Download        festival_demo.sh  GoogleTTS_demo.sh  pico2text_demo.sh
+espeak_demo.sh  flite_demo.sh     lookdave.wav
+```
+
+You can run these shell files `.sh` by typing `./filename`, for example, typing `./espeak_demo.sh` and see what happens. Take some time to look at each script and see how it works. You can see a script by typing `cat filename`. For instance:
+
+```
+pi@ixe00:~/speech-scripts $ cat festival_demo.sh 
+#from: https://elinux.org/RPi_Text_to_Speech_(Speech_Synthesis)#Festival_Text_to_Speech
+```
+You can test the commands by running
+```
+echo "Just what do you think you're doing, Dave?" | festival --tts
+```
+
+Now, you might wonder what exactly is a `.sh` file? 
+Typically, a `.sh` file is a shell script which you can execute in a terminal. The example files we offer here are for you to figure out the ways to play with audio on your Pi!
+
+You can also play audio files directly with `aplay filename`. Try typing `aplay lookdave.wav`.
+
+\*\***Write your own shell file to use your favorite of these TTS engines to have your Pi greet you by name.**\*\*
+(This shell file should be saved to your own repo for this lab.)
 
 File: Lab 3/speech-scripts/greet_me.sh
 
 https://github.com/Irene-Wu-1002/Interactive-Lab-Hub/blob/Fall2025/Lab%203/speech-scripts/greet_me.sh
-  
-### Speech to Text
 
-\*\***Write my own shell file that verbally asks for a numerical based input (such as a phone number, zipcode, number of pets, etc) and records the answer the respondent provides.**\*\*
+---
+Bonus:
+[Piper](https://github.com/rhasspy/piper) is another fast neural based text to speech package for raspberry pi which can be installed easily through python with:
+```
+pip install piper-tts
+```
+and used from the command line. Running the command below the first time will download the model, concurrent runs will be faster. 
+```
+echo 'Welcome to the world of speech synthesis!' | piper \
+  --model en_US-lessac-medium \
+  --output_file welcome.wav
+```
+Check the file that was created by running `aplay welcome.wav`. Many more languages are supported and audio can be streamed dirctly to an audio output, rather than into an file by:
 
-Ask number of pets
+```
+echo 'This sentence is spoken first. This sentence is synthesized while the first sentence is spoken.' | \
+  piper --model en_US-lessac-medium --output-raw | \
+  aplay -r 22050 -f S16_LE -t raw -
+```
+
+
+</details>
+
+<details>
+  <summary>Speech to Text</summary>
+
+  ### Speech to Text
+
+Next setup speech to text. We are using a speech recognition engine, [Vosk](https://alphacephei.com/vosk/), which is made by researchers at Carnegie Mellon University. Vosk is amazing because it is an offline speech recognition engine; that is, all the processing for the speech recognition is happening onboard the Raspberry Pi. 
+
+Make sure you're running in your virtual environment with the dependencies already installed:
+```
+source .venv/bin/activate
+```
+
+Test if vosk works by transcribing text:
+
+```
+vosk-transcriber -i recorded_mono.wav -o test.txt
+```
+
+You can use vosk with the microphone by running 
+```
+python test_microphone.py -m en
+```
+
+---
+Bonus:
+[Whisper](https://openai.com/index/whisper/) is a neural network–based speech-to-text (STT) model developed and open-sourced by OpenAI. Compared to Vosk, Whisper generally achieves higher accuracy, particularly on noisy audio and diverse accents. It is available in multiple model sizes; for edge devices such as the Raspberry Pi 5 used in this class, the tiny.en model runs with reasonable latency even without a GPU.
+
+By contrast, Vosk is more lightweight and optimized for running efficiently on low-power devices like the Raspberry Pi. The choice between Whisper and Vosk depends on your scenario: if you need higher accuracy and can afford slightly more compute, Whisper is preferable; if your priority is minimal resource usage, Vosk may be a better fit.
+
+In this class, we provide two Whisper options: A quantized 8-bit faster-whisper model for speed, and the standard Whisper model. Try them out and compare the trade-offs.
+
+Make sure you're in the Lab 3 directory with your virtual environment activated:
+```
+cd ~/Interactive-Lab-Hub/Lab\ 3/speech-scripts
+source ../.venv/bin/activate
+```
+
+Then test the Whisper models:
+```
+python whisper_try.py
+```
+and
+
+```
+python faster_whisper_try.py
+```
+\*\***Write your own shell file that verbally asks for a numerical based input (such as a phone number, zipcode, number of pets, etc) and records the answer the respondent provides.**\*\*
+
+**Ask number of pets**
 
 File: Lab 3/speech-scripts/ask_number.sh
 
 https://github.com/Irene-Wu-1002/Interactive-Lab-Hub/blob/Fall2025/Lab%203/speech-scripts/ask_number.sh
 
-\*\***Try creating a simple voice interaction that combines speech recognition, Ollama processing, and text-to-speech output. Document what I built and how users responded to it.**\*\*
+</details>
+
+<details>
+  <summary>NEW: AI-Powered Conversations with Ollama</summary>
+
+  ### 🤖 NEW: AI-Powered Conversations with Ollama
+
+Want to add intelligent conversation capabilities to your voice projects? **Ollama** lets you run AI models locally on your Raspberry Pi for sophisticated dialogue without requiring internet connectivity!
+
+#### Quick Start with Ollama
+
+**Installation** (takes ~5 minutes):
+```bash
+# Install Ollama
+curl -fsSL https://ollama.com/install.sh | sh
+
+# Download recommended model for Pi 5
+ollama pull phi3:mini
+
+# Install system dependencies for audio (required for pyaudio)
+sudo apt-get update
+sudo apt-get install -y portaudio19-dev python3-dev
+
+# Create separate virtual environment for Ollama (due to pyaudio conflicts)
+cd ollama/
+python3 -m venv ollama_venv
+source ollama_venv/bin/activate
+
+# Install Python dependencies in separate environment
+pip install -r ollama_requirements.txt
+```
+#### Ready-to-Use Scripts
+
+We've created three Ollama integration scripts for different use cases:
+
+**1. Basic Demo** - Learn how Ollama works:
+```bash
+python3 ollama_demo.py
+```
+
+**2. Voice Assistant** - Full speech-to-text + AI + text-to-speech:
+```bash
+python3 ollama_voice_assistant.py
+```
+
+**3. Web Interface** - Beautiful web-based chat with voice options:
+```bash
+python3 ollama_web_app.py
+# Then open: http://localhost:5000
+```
+
+#### Integration in Your Projects
+
+Simple example to add AI to any project:
+```python
+import requests
+
+def ask_ai(question):
+    response = requests.post(
+        "http://localhost:11434/api/generate",
+        json={"model": "phi3:mini", "prompt": question, "stream": False}
+    )
+    return response.json().get('response', 'No response')
+
+# Use it anywhere!
+answer = ask_ai("How should I greet users?")
+```
+
+**📖 Complete Setup Guide**: See `OLLAMA_SETUP.md` for detailed instructions, troubleshooting, and advanced usage!
+
+\*\***Try creating a simple voice interaction that combines speech recognition, Ollama processing, and text-to-speech output. Document what you built and how users responded to it.**\*\*
 
 file: Lab 3/ollama_voice_demo.py
 
 https://github.com/Irene-Wu-1002/Interactive-Lab-Hub/blob/bf868fca763b423f1a7d349c37861aea52d6bf8b/Lab%203/ollama_voice_demo.py
 
+</details>
 
-### Storyboard
+---
 
-Storyboard and/or use a Verplank diagram to design a speech-enabled device. (Stuck? Make a device that talks for dogs. If that is too stupid, find an application that is better than that.) 
+## Part 1-A. Storyboard - *"Fairy Mate" Concepts*
 
-**Verplank diagram**
+**Design Tool:** Verplank Diagram
+
 ![img](https://github.com/Irene-Wu-1002/Interactive-Lab-Hub/blob/Fall2025/Lab%203/images/FairyMate.png)
 
+### 💡 Idea
+Modern life often leaves people emotionally disconnected, even when surrounded by others.  
+**Fairy Mate** is a friendly, speech-enabled companion that helps users express and reflect on their feelings.
 
-**Idea**: Nowadays, individuals are more prone to mental health challenges, not only because they are constantly exposed to overwhelming amounts of information, but also because modern life often brings people physically closer yet emotionally distant. To address this, we need a way for individuals to express their feelings, whether positive or negative.
+### 🌈 Scenario
+1. Fairy Mate greets the user: *“How was your day?”*  
+2. The user shares their thoughts and emotions.  
+3. Fairy Mate offers empathetic responses or practical advice.  
+4. The device automatically creates a **journal entry** summarizing the conversation.
 
-Our solution is a device called "Fairy Mate" — a friendly companion that allows individuals to share whatever is on their minds.
+### ⚙️ Key Functions
+- **Emotion Detection:** Analyzes environmental and biological signals to gauge mood.
+- **Emotional Support:** Provides comfort and encouragement.  
+- **Personal Journaling:** Logs conversations and emotions for long-term reflection.
 
-**Scenario**
-1. When an individual returns home, Fairy Mate greets them and asks, “How was your day?”
-2. The individual can freely share their thoughts and emotions.
-3. Fairy Mate provides emotional support and, if possible, practical suggestions.
-4. After the conversation, Fairy Mate creates a journal entry to help preserve the memory and track emotional patterns over time.
+---
 
-**Function**
-1. Emotion Detection – Detects movement, environmental sounds, and biological signals to sense the user’s emotional state when they are at home.
-2. Emotional Support – Offers comfort, encouragement, and solutions when needed.
-3. Personal Journaling – Automatically creates a journal entry summarizing the user’s feelings and experiences for future reflection.
+## Part 1-B. Acting out the dialogue
 
+- **Video:** https://drive.google.com/file/d/1qbs6NWLszIRgVU5eu93dBdbvuezS9Y7g/view?usp=drive_link
 
-### Acting out the dialogue
+- **Reflection**
 
-Video: https://drive.google.com/file/d/1qbs6NWLszIRgVU5eu93dBdbvuezS9Y7g/view?usp=drive_link
+  > 💬 Describe if the dialogue seemed different than what you imagined when it was acted out, and how.
 
-**Difference between imagined and acted out**
+  Although I hadn’t explained to my friend how to use it beforehand, the conversation flowed naturally, and we were able to share real emotions during the exchange. I think it worked well because the Fairy Mate had good prompts that helped guide the discussion and made it feel caring and supportive. Even without much preparation, the interaction felt meaningful and genuine.
 
-Although I hadn’t explained to my friend how to use it beforehand, the conversation flowed naturally, and we were able to share real emotions during the exchange. I think it worked well because the Fairy Mate had good prompts that helped guide the discussion and made it feel caring and supportive. Even without much preparation, the interaction felt meaningful and genuine.
-
-# Lab 3 Part 2
-
-## Prep for Part 2
-
-1. What are concrete things that could use improvement in the design of your device? For example: wording, timing, anticipation of misunderstandings...
-
-- Wording: We think instead of always offering suggestions or giving emotional support, Fairy Mate could first confirm the user’s emotional tone.
-- Timing:
-  - Fairy Mate could pause a bit longer after a person speaks, allowing natural reflection before responding.
-  - It might also recognize when the user wants to end the conversation and wrap up gently.
+---
 
 
-2. What are other modes of interaction _beyond speech_ that you might also use to clarify how to interact?
+## Part 2-A. Refinement
 
-To make Fairy Mate more intuitive and engaging, we incorporated additional interaction modes beyond speech. These include touch-based controls and visual feedback, which help users understand how to interact with the device and choose the kind of support they need.
+### 🧩 1. Design Improvements
 
-**Mode Division**
+> 💬 What are concrete things that could use improvement in the design of your device? For example: wording, timing, anticipation of misunderstandings
 
-The interaction is divided into two main modes:
-
-- Emotional Support Mode
-- Solution Support Mode
-
-These modes allow users to choose between receiving empathetic emotional comfort or practical problem-solving guidance, depending on what they need at the moment.
-
-**Touch Interaction**
-
-We use the Adafruit MPR121 capacitive touch sensor to let users navigate between modes by tapping numbered touch pads made from copper foil.
-
-- Pads 1–5: Emotional Support: Provides empathetic, comforting responses. Fairy Mate listens and validates the user’s emotions without rushing to offer solutions. Example: “I hear you. That sounds really tough. Would you like to take a deep breath together?”
-- Pads 6–10: Solution Support: Offers practical suggestions, motivation, or mindfulness techniques to help manage stress. Example: “Let’s think of one small thing you could do right now to feel better. Maybe take a short walk?”
-
-**Visual Interaction**
-
-To clarify which mode is active, Fairy Mate uses color-coded visual feedback on its screen or ambient lighting:
-
-- Blue Light = Emotional Support Mode
-- Green Light = Solution Support Mode
-
-This visual cue helps users instantly recognize the device’s current mode and ensures smoother, more intuitive interaction — even without spoken instructions.
+| Aspect | Observation | Suggested Improvement |
+|--------|--------------|-----------------------|
+| **Wording** | Fairy Mate often gives support too quickly. | Confirm the user’s emotional tone first. |
+| **Timing** | Responses can feel rushed or abrupt. | Add short pauses and detect conversation endings gracefully. |
 
 
-3. Make a new storyboard, diagram and/or script based on these reflections.
+### 🖐️ 2. Beyond Speech — Expanding Interaction Modes
+> 💬 What are other modes of interaction _beyond speech_ that you might also use to clarify how to interact?
+
+To enhance intuitiveness, we added **touch** and **visual feedback** alongside voice
+
+#### 📝 Mode Overview
+- 🩵 **Emotional Support Mode** — Comforting, empathetic responses.  
+- 💚 **Solution Support Mode** — Practical suggestions or motivational help.
+
+#### 🧲 Touch Controls
+Using an **Adafruit MPR121 capacitive touch sensor**:
+
+| Pad Range | Mode | Example Behavior |
+|------------|------|------------------|
+| 1–5 | Emotional Support | “I hear you. That sounds really tough. Would you like to take a deep breath together?” |
+| 6–10 | Solution Support | “Let’s think of one small thing you could do right now to feel better.” |
+
+#### 💡 Visual Feedback
+- 🔵 **Blue Light** → Emotional Support Mode  
+- 🟢 **Green Light** → Solution Support Mode  
+
+These color cues make mode-switching clear and intuitive.
+
+
+
+### 🧭 3. Updated Storyboard / Diagram
+
+New storyboards and scripts reflect improved user flow and feedback mechanisms.  
 
 ![image](https://github.com/Irene-Wu-1002/Interactive-Lab-Hub/blob/88dc1f0158ca6c594c530d43e8107a38beb3d578/Lab%203/images/Storyboard_New.png)
 
-## Demo
+
+---
+
+## 🎬 Part 2-B. Demo
 
 [Demo Video](https://drive.google.com/drive/u/0/folders/1I0tN1MeywTAgg3vLXSNYWh-553YHKBoO)
 
-## Test the system & Questions
+---
 
-### What worked well about the system and what didn't?
+## 🧪 Part 2-C. System Testing & Reflections
+
+### ✅ What Worked Well
+
+> 💬 What worked well about the system?
 
 1. The color-coded modes (blue for Emotional Support and green for Solution Support) made it easy to recognize the device’s state.
 2. The device could provide more personalized feedback based on tone or emotional cues, rather than relying only on preset responses.
 3. Adding clearer visual or sound cues for when the device is “listening” versus “processing” would also make the interaction feel more intuitive.
 
 
-### What worked well about the controller and what didn't?
+### ⚠️ What Could Improve (advice from other test users)
+
+> 💬 What didn't work well about the system?
 
 1. The touch sensor controller worked well in providing a simple and intuitive way for users to interact with Fairy Mate.
 2. The use of color feedback, blue for Emotional Support and green for Solution Support, clearly indicated which mode was active, helping users feel confident that their input was recognized.
@@ -133,25 +326,38 @@ This visual cue helps users instantly recognize the device’s current mode and 
 4. Because the pads were numbered rather than labeled with words or icons, some users had to remember which numbers corresponded to each mode.
 
 
-### What lessons can you take away from the WoZ interactions for designing a more autonomous version of the system?
+### 🧩 Lessons from WoZ Interactions
 
-To train a more autonomous version, Fairy Mate could record anonymized data from real user interactions, such as voice input, selected touch modes, response timing, and user reactions (e.g., facial expressions, tone of voice, or posture changes). This dataset could be labeled by emotional state (e.g., sad, stressed, calm) and type of support chosen (emotional vs. solution). By analyzing patterns in how users respond to certain prompts or tones, the system could learn to adjust its responses dynamically.
+> 💬 What lessons can you take away from the WoZ interactions for designing a more autonomous version of the system?
 
-### How could you use your system to create a dataset of interaction? What other sensing modalities would make sense to capture?
+To make Fairy Mate more autonomous:
+- Collect **anonymized interaction data** (voice, touch, response timing, user sentiment).  
+- Label data by **emotional state** and **support type**.  
+- Train the system to adapt its tone and timing dynamically.
 
-To train a more autonomous version, Fairy Mate could record anonymized data from real user interactions, such as voice input, selected touch modes, response timing, and user reactions (e.g., facial expressions, tone of voice, or posture changes). This dataset could be labeled by emotional state (e.g., sad, stressed, calm) and type of support chosen (emotional vs. solution). By analyzing patterns in how users respond to certain prompts or tones, the system could learn to adjust its responses dynamically.
+### 📉 Building an Interaction Dataset
 
-To make Fairy Mate more emotionally intelligent, the following sensing modalities would be valuable:
+> 💬 How could you use your system to create a dataset of interaction? What other sensing modalities would make sense to capture?
 
-**Microphone Audio Analysis**: Detect vocal tone, stress, or hesitation to infer emotional state.
+| Sensor | Purpose |
+|--------|----------|
+| 🎤 **Microphone** | Detect tone, stress, or hesitation. |
+| 📷 **Facial Recognition** | Identify expressions (smile, frown, eye contact). |
+| 🩺 **Motion Sensors (IMU)** | Track restlessness or relaxation. |
+| 🌡️ **Environmental Sensors** | Adjust feedback based on context (e.g., quiet/dark room → bedtime suggestion). |
+| ✋ **Touch Pressure** | Infer emotional intensity from contact force or duration. |
 
-**Facial Expression Recognitio**n: Use a camera to sense mood through smiles, frowns, or eye contact.
+---
 
-**Body Motion Sensors (Accelerometer / IMU)**: Identify restlessness, fatigue, or relaxation through movement.
+### 🌻 Summary
 
-**Environmental Sensors**: Measure lighting or sound levels to adjust tone or suggest activities (e.g., “It’s quiet and dark — maybe it’s time to rest”).
+Fairy Mate blends **speech, emotion sensing, and multi-modal feedback** to create a compassionate, responsive digital companion.  
+Through iterative design, testing, and user reflection, we refined it from a concept into a system that **listens with empathy and responds with understanding**.
 
-**Touch Pressure or Duration**: Understand emotional intensity from how long or firmly a user touches the sensor.
+---
+
+
+
 
 
 
