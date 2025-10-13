@@ -13,9 +13,9 @@
 	This helps ensure your README.md is clear, professional, and uniquely yours!
 </details>
 
----
-
-## Lab 4 Deliverables
+<details>
+	<Summary><strong>Lab 4 Deliverable (Click to Expand)</strong>
+	</summary>
 
 ### Part 1 (Week 1)
 **Submit the following for Part 1:**  
@@ -52,15 +52,22 @@
 	- Written summary: what it looks like, works like, acts like
 	- Reflection on what you learned and next steps
 
----
+The deliverables for this lab are, writings, sketches, photos, and videos that show what your prototype:
 
-## Lab Overview
-**NAMES OF COLLABORATORS HERE**
+"Looks like": shows how the device should look, feel, sit, weigh, etc.
+"Works like": shows what the device can do.
+"Acts like": shows how a person would interact with the device.
+For submission, the readme.md page for this lab should be edited to include the work you have done:
 
+Upload any materials that explain what you did, into your lab 4 repository, and link them in your lab 4 readme.md.
+Link your Lab 4 readme.md in your main Interactive-Lab-Hub readme.md.
+Labs are due on Mondays, make sure to submit your Lab 4 readme.md to Canvas.
 
-For lab this week, we focus both on sensing, to bring in new modes of input into your devices, as well as prototyping the physical look and feel of the device. You will think about the physical form the device needs to perform the sensing as well as present the display or feedback about what was sensed. 
+</details>
 
-## Part 1 Lab Preparation
+<details>
+	<summary><strong>Lab 4 Part 1. Preparation</strong></summary>
+	## Part 1 Lab Preparation
 
 ### Get the latest content:
 As always, pull updates from the class Interactive-Lab-Hub to both your Pi and your own GitHub repo. As we discussed in the class, there are 2 ways you can do so:
@@ -100,20 +107,15 @@ Option 3: (preferred) use the Github.com interface to update the changes.
 
 (We do offer shared cutting board, cutting tools, and markers on the class cart during the lab, so do not worry if you don't have them!)
 
-## Deliverables \& Submission for Lab 4
+</details>
 
-The deliverables for this lab are, writings, sketches, photos, and videos that show what your prototype:
-* "Looks like": shows how the device should look, feel, sit, weigh, etc.
-* "Works like": shows what the device can do.
-* "Acts like": shows how a person would interact with the device.
-
-For submission, the readme.md page for this lab should be edited to include the work you have done:
-* Upload any materials that explain what you did, into your lab 4 repository, and link them in your lab 4 readme.md.
-* Link your Lab 4 readme.md in your main Interactive-Lab-Hub readme.md. 
-* Labs are due on Mondays, make sure to submit your Lab 4 readme.md to Canvas.
-
+---
 
 ## Lab Overview
+Collaborators: Jessica Hsiao (dj779), Irene Wu (yw2785)
+
+For lab this week, we focus both on sensing, to bring in new modes of input into your devices, as well as prototyping the physical look and feel of the device. You will think about the physical form the device needs to perform the sensing as well as present the display or feedback about what was sensed. 
+
 
 A) [Capacitive Sensing](#part-a)
 
@@ -250,22 +252,111 @@ You can go to the [SparkFun GitHub Page](https://github.com/sparkfun/Qwiic_Proxi
 ### Physical considerations for sensing
 
 
-Usually, sensors need to be positioned in specific locations or orientations to make them useful for their application. Now that you've tried a bunch of the sensors, pick one that you would like to use, and an application where you use the output of that sensor for an interaction. For example, you can use a distance sensor to measure someone's height if you position it overhead and get them to stand under it.
+Usually, sensors need to be positioned in specific locations or orientations to make them useful for their application. Now that you've tried a bunch of the sensors, pick one that you would like to use, and an application where you use the output of that sensor for an interaction. For example, you can use a distance sensor to measure someone's height if you position it overhead and get them to stand under it. 
+
+We chose **Light/Proximity/Gesture sensor (APDS-9960)** as our sensor.
+
+**Application #1: Plant Health Monitor**
+
+- Sensor information: light
+- The device is capable of detecting plant color variations by RGB. When the color shifts from bright and vibrant tones to brown, the system alerts users that the plants are under stress or nearing death. Users can then respond by providing additional water or nutrients to restore plant health.
+
+**Application #2: Natural Lighting Room**
+
+- Sensor information: light
+- Mounted near a window or ceiling fixture, the sensor continuously measures ambient light intensity. When sufficient natural light is detected, the system automatically dims or turns off artificial lighting to save energy.
+
+**Application #3:  Exhibition Visitor Counter**
+
+- Sensor information: gesture
+- Placed on a side or above an exhibit entryway, the APDS-9960 detects directional hand or body movements. When a visitor passes by, the gesture data (e.g., left or right swipe) increments a counter, helping curators estimate visitor flow and engagement.
+
+**Application #4: Eye Wellness Assistant**
+
+- Sensor information: proximity
+- Integrated near a computer monitor or laptop bezel, the proximity sensor tracks how close a user’s face is to the screen. If the user sits too close for prolonged periods, the system gently alerts them to maintain a healthier viewing distance.
+
+**Application #5: Movie Controller**
+
+- Sensor information: gesture
+- Installed near a TV or projector, the sensor enables touch-free gesture controls. Users can swipe left to rewind, swipe right to skip, or perform an upward gesture to pause/play the movie.
+
 
 
 **\*\*\*Draw 5 sketches of different ways you might use your sensor, and how the larger device needs to be shaped in order to make the sensor useful.\*\*\***
 
+Application #1: Plant Health Monitor
+
+Application #2: Natural Lighting Room
+
+Application #3:  Exhibition Visitor Counter
+
+Application #4: Eye Wellness Assistant
+
+Application #5: Movie Controller
+
+
 **\*\*\*What are some things these sketches raise as questions? What do you need to physically prototype to understand how to anwer those questions?\*\*\***
 
+**Application #1: Plant Health Monitor**
+- Questions raised:
+	1. Connection and communication: The sketch doesn’t specify how the sensor and the display communicate — whether they are connected by wire, use wireless transmission, or operate through an intermediary microcontroller such as a Raspberry Pi.
+	2. Sensor placement: It’s unclear how the sensor should be positioned or angled relative to the plant’s leaves to ensure consistent and accurate color readings.
+	3. Environmental lighting effects: Different ambient lighting conditions (sunny vs. cloudy, indoor vs. outdoor) could alter the perceived color of the plant, even when its actual health remains the same.
+
+- To address these questions, we can first build a prototype that tests various sensor positions and angles to determine which setup yields the most stable readings. Next, running lighting variation tests — capturing RGB data under multiple environmental conditions — would help calibrate thresholds or develop compensation algorithms. Finally, prototyping the communication pathway between the sensor and display (wired vs. wireless) will clarify how to make the system responsive and portable for real-world use.
+
+**Application #2: Natural Lighting Room**
+
+- Questions raised:
+	1. Light differentiation: The sketch doesn’t explain how the sensor distinguishes between natural and artificial light — will it rely solely on overall brightness, or also consider color temperature and spectral balance?
+	2. Sensitivity and stability: It’s unclear how sensitive the system should be before adjusting lighting intensity. Minor fluctuations in sunlight (e.g., when clouds pass) could cause unstable dimming or flickering.
+	3. Sensor orientation: The sensor’s placement and angle might significantly affect readings — pointing it directly at a window versus facing the interior ceiling could produce very different results.
+	4. Communication and control: The sketch doesn’t specify how the sensor interacts with the lighting system — through direct wiring, a microcontroller, or a wireless connection.
+
+- To address these questions, we can start by testing the sensor at different positions and orientations within a room to measure how light readings vary across the day. Next, a calibration experiment can help determine appropriate brightness thresholds and smoothing algorithms to avoid frequent or erratic lighting changes. Finally, building a prototype connection between the sensor and a light controller (e.g., Raspberry Pi + LED dimmer) will allow us to evaluate real-time response and communication reliability.
+
+**Application #3:  Exhibition Visitor Counter**
+
+- Questions raised:
+	1. Detection accuracy: The sketch doesn’t specify how the sensor distinguishes between individual visitors — for example, how it avoids counting the same person twice or missing people walking closely together.
+	2. Range and directionality: It’s unclear how far the APDS-9960 can reliably detect gestures or movement and whether it can sense entry versus exit directions.
+	3. Environmental interference: Exhibition lighting, reflections, or nearby displays might interfere with gesture detection or falsely trigger the counter.
+	4. Physical placement: The optimal height and orientation of the sensor relative to the doorway are uncertain — it may need to be tested at various positions to ensure consistent detection.
+
+- By testing different sensor heights and distances near an actual doorway, we can measure detection accuracy for varying visitor speeds and group sizes. Additionally, running environmental tests under different lighting conditions will help determine if shielding or calibration is needed to reduce false triggers. Finally, prototyping a count display system will help evaluate real-time feedback and timing consistency during high-traffic scenarios.
+
+**Application #4: Eye Wellness Assistant**
+
+- Questions raised:
+	1. Unclear sense of distance: The sketch doesn’t convey how far the user is from the screen, making it difficult to judge whether the sensor can accurately measure a comfortable viewing range.
+	2. Screen tilt impact: The monitor’s tilt angle could affect proximity readings, since the sensor’s detection depends heavily on its facing direction.
+	3. Sensor form and placement: The drawing doesn’t indicate the sensor’s actual size or visibility, leaving uncertainty about whether it would distract the user or blend seamlessly into the screen design.
+
+- To answer the first question, we need to design a way to display the distance information to the user, for instance, putting a tiny monitor next to the screen to show the number. For the second and the third questions, they can be approached by conducting user studies with the physical prototype to experiment in a real-world settings. We can run user trials with different sensor placements and screen angles to evaluate accuracy, comfort, and intrusiveness in daily use.
+
+**Application #5: Movie Controller**
+
+- Questions raised:
+	1. Gesture recognition accuracy: The sketch doesn’t clarify how reliably the sensor can differentiate between gestures such as left, right, or up swipes, especially when users vary in hand speed or distance.
+	2. Detection range and angle: It’s unclear how far the user can sit from the screen while still being detected, or how wide the sensor’s field of view needs to be to capture gestures effectively.
+	3. Interference and usability: Ambient lighting, reflections, or nearby movement (like someone walking past) could accidentally trigger commands. The sketch doesn’t show how the system might prevent or handle such false positives.
+
+- To address these questions, we can build a functional prototype that connects the gesture sensor to a simple media controller. This would allow testing of gesture detection accuracy across multiple users, distances, and lighting conditions. We also need to experiment with sensor placement and viewing angles — for example, mounting it on top of or below the TV — to find the most reliable setup. Lastly, collecting real interaction data can help define gesture thresholds and filtering strategies to minimize unintended activations.
+
+
 **\*\*\*Pick one of these designs to prototype.\*\*\***
+
+We picked the forth one to prototype: Eye Wellness Assistant
 
 
 ### Part D
 ### Physical considerations for displaying information and housing parts
 
-
-
-Here is a Pi with a paper faceplate on it to turn it into a display interface:
+<details>
+	<summary>Examples (Click to expand)
+	</summary>
+	Here is a Pi with a paper faceplate on it to turn it into a display interface:
 
 
 <img src="https://github.com/FAR-Lab/Developing-and-Designing-Interactive-Devices/blob/2020Fall/images/paper_if.png?raw=true"  width="250"/>
@@ -298,14 +389,91 @@ Fold the first flap of the strip so that it sits flush against the back of the f
 Here is an example:
 
 <img src="https://github.com/FAR-Lab/Developing-and-Designing-Interactive-Devices/blob/2020Fall/images/horoscope.png?raw=true"  width="250"/>
+</details>
+
+
 
 Think about how you want to present the information about what your sensor is sensing! Design a paper display for your project that communicates the state of the Pi and a sensor. Ideally you should design it so that you can slide the Pi out to work on the circuit or programming, and then slide it back in and reattach a few wires to be back in operation.
  
 **\*\*\*Sketch 5 designs for how you would physically position your display and any buttons or knobs needed to interact with it.\*\*\***
 
+**Design #1**: The physical prototype includes an adjustable sensor holder extending from the computer, with a small board placed next to it for sensor integration. When the user is too close to the monitor, the board will display a red light and flash continuously to alert them. Otherwise, the board will remain black without providing any additional notifications.
+
+**Design #2**: The physical prototype includes an adjustable curved phone stand extending from the computer, with a small light placed beside it to indicate the proximity detection status. It uses a color light (green = good, yellow =  a bit close, red = too close) to present the status.
+
+
+**Design #3**: The physical prototype includes an adjustable curved phone stand extending from the computer, with a small board placed next to it for sensor integration. The actual distance between the screen and the user’s face will be displayed on the board.
+
+**Design #4**: Place the sensor on top of the computer with the sensor facing downward. When the user gets too close to the computer (meaning their head is below the sensor), the sensor detects the proximity and uses a beeping sound to alert the users.
+
+**Design #5**: Place the sensor on top of the computer with the sensor facing downward. When the user gets too close to the computer (meaning their head is below the sensor), a voice message will be played to remind the user of the distance, such as “you are too close to your screen, please keep away from it”
+
+
+
 **\*\*\*What are some things these sketches raise as questions? What do you need to physically prototype to understand how to anwer those questions?\*\*\***
 
+#### Design #1
+
+- Questions raised:
+	1. How sensitive should the proximity threshold be to accurately detect when the user is “too close” without triggering false alerts?
+	2. Will the flashing red light be noticeable yet comfortable for the user, or could it become distracting during long use?
+	3. How much does the adjustable sensor angle affect detection accuracy across different screen tilt positions and user heights?
+- What to prototype:
+	1. Test various distance thresholds to determine the optimal trigger range for comfort and accuracy.
+	2. Experiment with different light intensities, colors, and flashing rates to find a balance between visibility and user comfort.
+	3. Build and evaluate the adjustable holder to measure how sensor angle and placement influence proximity detection reliability.
+
+
+#### Design #2
+
+- Questions raised:
+	1. What are the optimal distance thresholds for each color indicator (green, yellow, red) to provide meaningful and intuitive feedback to users?
+	2. Will users easily notice and interpret the color changes, or would additional feedback (e.g., brightness or flashing) improve clarity?
+	3. How does the curved stand’s angle and height affect the accuracy of proximity detection for users of different sitting positions?
+- What to prototype:
+	1. Calibrate and test various distance ranges to define clear and consistent thresholds for each light color.
+	2. Conduct short user tests to evaluate whether color feedback alone is sufficient for awareness and comfort.
+	3. Build the curved stand prototype and measure detection performance at multiple sensor angles and user heights to ensure reliability.
+
+
+#### Design #3
+
+- Questions raised:
+	1. How accurate and responsive will the displayed distance values be when the user moves slightly or changes posture?
+	2. What is the most effective way to display the distance information so that it’s noticeable without being distracting?
+	3. How does the sensor’s placement or tilt angle influence measurement consistency across different screen setups and user positions?
+- What to prototype:
+	1. Test the sensor’s real-time distance measurement accuracy and response speed under typical usage movements.
+	2. Experiment with different display formats (numerical, graphical, or color-coded) to assess readability and user comfort.
+	3. Build the adjustable stand prototype and measure how various angles and distances affect data stability and reliability.
+
+#### Design #4:
+
+- Questions raised:
+	1. How accurately can the downward-facing sensor detect when the user’s head crosses the threshold distance without being affected by lighting or hair color?
+	2. What should the distance threshold be to ensure the alert triggers at a comfortable and safe viewing distance?
+	3. Will the beeping alert remain effective over time, or might it become annoying or easy to ignore during long computer use?
+- What to prototype:
+	1. Test detection reliability across users with different heights, hairstyles, and seating positions.
+	2. Experiment with several threshold distances to determine an optimal range that balances comfort and alert sensitivity.
+	3. Prototype different audio feedback patterns (e.g., single beep vs. continuous tone) to evaluate which is most noticeable yet least disruptive.
+
+
+#### Design #5:
+- Questions raised:
+	1. How should the timing and frequency of the voice alert be set so it effectively reminds users without feeling intrusive?
+	2. Will the downward-facing sensor maintain consistent accuracy across users with different heights and seating distances?
+	3. Do users perceive the voice message as helpful feedback or as a distraction during focused work?
+- What to prototype:
+	1. Experiment with various voice alert intervals, tones, and volumes to find a balance between clarity and comfort.
+	2. Test the sensor’s performance across diverse user positions and lighting environments to ensure reliable detection.
+	3. Conduct short user evaluations comparing voice feedback with other alert methods (e.g., light or sound) to determine the most preferred design.
+
+
+
 **\*\*\*Pick one of these display designs to integrate into your prototype.\*\*\***
+
+We picked the forth one to integrate into our prototype.
 
 **\*\*\*Explain the rationale for the design.\*\*\*** (e.g. Does it need to be a certain size or form or need to be able to be seen from a certain distance?)
 
