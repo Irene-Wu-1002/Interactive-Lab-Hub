@@ -497,9 +497,9 @@ We picked the forth one to integrate into our prototype.
 
 Build a cardboard prototype of your design.
 
-
 **\*\*\*Document your rough prototype.\*\*\***
 
+![img](https://github.com/Irene-Wu-1002/Interactive-Lab-Hub/blob/Fall2025/Lab%204/images/cardboard%20prototype.png)
 
 # LAB PART 2
 
