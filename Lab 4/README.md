@@ -495,6 +495,17 @@ We picked the forth one to integrate into our prototype.
 
 **\*\*\*Explain the rationale for the design.\*\*\*** (e.g. Does it need to be a certain size or form or need to be able to be seen from a certain distance?)
 
+#### Why the device is elevated
+- The sensor needs to face downward to accurately detect the user’s head position. However, because the sensor strip is relatively short, we had to raise the Raspberry Pi to achieve the proper downward angle. Elevating the device also ensures that the user’s head does not accidentally block or strike the sensor during normal use.
+- During testing, we found that the sensor can reliably detect objects within a range of about 15 cm. Beyond this distance, detection becomes unreliable. Therefore, raising the device ensures that the user’s head remains within this effective detection range for consistent performance.
+
+#### Why the device has several holes
+- The holes serve multiple functional purposes. One is for the Bluetooth module, which broadcasts audio alerts to notify the user when they are sitting too close to the screen. Another set of holes supports display visibility and ventilation. We integrated a small screen on the Raspberry Pi to show system details and user feedback. To make this display clear and user-friendly, we positioned it near the radio broadcaster and ensured there are openings for both visibility and heat dissipation.
+
+#### Why handles were added to the device
+- We added two handles on the right side of the device to make maintenance easier. These handles allow users or developers to conveniently open the casing for adjustments, sensor calibration, or component replacement without damaging the housing.
+
+
 Build a cardboard prototype of your design.
 
 **\*\*\*Document your rough prototype.\*\*\***
