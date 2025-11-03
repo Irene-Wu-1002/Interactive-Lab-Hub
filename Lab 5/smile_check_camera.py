@@ -1,11 +1,11 @@
 """
 Multi-Person Smile-Check Camera
 A simple interaction prototype that detects multiple faces and checks if everyone is smiling.
-Uses MediaPipe Face Mesh for face detection and smile estimation.
+Uses MediaPipe Face Detection (BlazeFace) for face detection and image analysis for smile estimation.
 
 Interaction Concept:
 - Detects multiple faces simultaneously
-- Estimates smile score for each face using facial landmarks
+- Estimates smile score for each face using mouth region analysis
 - Triggers feedback when not everyone is smiling (smile score < 0.65 for >1 second)
 - Multiple feedback modes: audio, LED simulation, screen overlay, progress bar
 """
@@ -15,22 +15,17 @@ import mediapipe as mp
 import numpy as np
 import time
 import math
-from collections import deque
-from datetime import datetime, timedelta
 
 class SmileCheckCamera:
     def __init__(self):
-        # Initialize MediaPipe Face Mesh
-        self.mp_face_mesh = mp.solutions.face_mesh
-        self.face_mesh = self.mp_face_mesh.FaceMesh(
-            static_image_mode=False,
-            max_num_faces=5,  # Support multiple faces
-            refine_landmarks=True,
-            min_detection_confidence=0.5,
-            min_tracking_confidence=0.5
+        # Initialize MediaPipe Face Detection (BlazeFace)
+        # Using face_detection instead of face_mesh to avoid UnicodeDecodeError
+        self.mp_face_detection = mp.solutions.face_detection
+        self.face_detection = self.mp_face_detection.FaceDetection(
+            model_selection=0,  # 0 for short-range (0-5 meters), 1 for full-range
+            min_detection_confidence=0.5
         )
         self.mp_draw = mp.solutions.drawing_utils
-        self.mp_draw_styles = mp.solutions.drawing_styles
         
         # Face tracking: store (face_id, smile_score, last_update_time, below_threshold_since)
         # below_threshold_since: timestamp when face first dropped below threshold (None if above threshold)
@@ -48,13 +43,6 @@ class SmileCheckCamera:
         self.smile_threshold = 0.65
         self.feedback_delay = 1.0  # seconds before triggering feedback
         
-        # Mouth landmarks indices (MediaPipe Face Mesh)
-        # Left corner: 61, Right corner: 291, Top lip center: 13, Bottom lip center: 14
-        self.mouth_left = 61
-        self.mouth_right = 291
-        self.mouth_top = 13
-        self.mouth_bottom = 14
-        
         # Audio feedback (using system beep or pygame if available)
         try:
             import pygame
@@ -66,38 +54,89 @@ class SmileCheckCamera:
             print("PyGame not available. Audio feedback disabled.")
             print("Install with: pip install pygame")
     
-    def calculate_smile_score(self, landmarks, image_shape):
+    def calculate_smile_score(self, face_bbox, image):
         """
-        Calculate smile score based on mouth landmark positions.
-        Uses the ratio of mouth width to mouth height as a heuristic.
-        Higher ratio indicates a smile.
+        Calculate smile score based on mouth region analysis within detected face.
+        Uses edge detection and contour analysis on the mouth region.
+        Higher score indicates a smile.
         """
-        h, w = image_shape[:2]
+        h, w = image.shape[:2]
         
-        # Get mouth landmark coordinates
-        try:
-            # Convert normalized coordinates to pixel coordinates
-            mouth_left = [landmarks[self.mouth_left].x * w, landmarks[self.mouth_left].y * h]
-            mouth_right = [landmarks[self.mouth_right].x * w, landmarks[self.mouth_right].y * h]
-            mouth_top = [landmarks[self.mouth_top].x * w, landmarks[self.mouth_top].y * h]
-            mouth_bottom = [landmarks[self.mouth_bottom].x * w, landmarks[self.mouth_bottom].y * h]
+        # Extract face bounding box coordinates
+        # MediaPipe returns normalized coordinates (xmin, ymin, width, height)
+        x_min = int(face_bbox.xmin * w)
+        y_min = int(face_bbox.ymin * h)
+        x_max = int((face_bbox.xmin + face_bbox.width) * w)
+        y_max = int((face_bbox.ymin + face_bbox.height) * h)
+        
+        # Ensure coordinates are within image bounds
+        x_min = max(0, x_min)
+        y_min = max(0, y_min)
+        x_max = min(w, x_max)
+        y_max = min(h, y_max)
+        
+        if x_max <= x_min or y_max <= y_min:
+            return 0.5  # Default neutral
+        
+        # Extract face region
+        face_region = image[y_min:y_max, x_min:x_max]
+        
+        if face_region.size == 0:
+            return 0.5
+        
+        # Estimate mouth region (typically in lower 1/3 of face, centered horizontally)
+        face_height = y_max - y_min
+        face_width = x_max - x_min
+        
+        # Mouth region is approximately in the lower third of the face
+        mouth_y_start = int(face_height * 0.55)
+        mouth_y_end = int(face_height * 0.85)
+        mouth_x_start = int(face_width * 0.25)
+        mouth_x_end = int(face_width * 0.75)
+        
+        if mouth_y_end <= mouth_y_start or mouth_x_end <= mouth_x_start:
+            return 0.5
+        
+        mouth_region = face_region[mouth_y_start:mouth_y_end, mouth_x_start:mouth_x_end]
+        
+        if mouth_region.size == 0:
+            return 0.5
+        
+        # Convert to grayscale if needed
+        if len(mouth_region.shape) == 3:
+            mouth_gray = cv2.cvtColor(mouth_region, cv2.COLOR_BGR2GRAY)
+        else:
+            mouth_gray = mouth_region
+        
+        # Apply edge detection
+        edges = cv2.Canny(mouth_gray, 50, 150)
+        
+        # Calculate horizontal edge density (smiles create more horizontal edges)
+        # Count horizontal edges (smiles curve upward)
+        horizontal_kernel = np.array([[-1, -1, -1],
+                                      [ 2,  2,  2],
+                                      [-1, -1, -1]])
+        horizontal_edges = cv2.filter2D(edges, -1, horizontal_kernel)
+        
+        # Calculate metrics
+        total_edges = np.sum(edges > 0)
+        horizontal_edge_strength = np.sum(horizontal_edges > 0)
+        
+        # Smile heuristic: higher horizontal edge ratio + mouth width
+        mouth_width = mouth_x_end - mouth_x_start
+        mouth_height = mouth_y_end - mouth_y_start
+        
+        if total_edges > 0 and mouth_height > 0:
+            edge_ratio = horizontal_edge_strength / total_edges if total_edges > 0 else 0
+            width_ratio = mouth_width / mouth_height
             
-            # Calculate mouth width and height
-            mouth_width = math.hypot(mouth_right[0] - mouth_left[0], mouth_right[1] - mouth_left[1])
-            mouth_height = math.hypot(mouth_bottom[0] - mouth_top[0], mouth_bottom[1] - mouth_top[1])
-            
-            # Smile score based on width-to-height ratio
-            # Normalize to 0-1 range (typical ratio for neutral is ~2-3, for smile is ~3-5)
-            if mouth_height > 0:
-                ratio = mouth_width / mouth_height
-                # Normalize: ratio 2.0 -> 0.0, ratio 5.0 -> 1.0
-                smile_score = np.clip((ratio - 2.0) / 3.0, 0.0, 1.0)
-            else:
-                smile_score = 0.5  # Default neutral
-            
-            return smile_score
-        except (IndexError, AttributeError):
-            return 0.5  # Default neutral if landmarks not available
+            # Combine metrics: wider mouth and upward curve suggests smile
+            smile_score = (edge_ratio * 0.6 + min(width_ratio / 3.0, 1.0) * 0.4)
+            smile_score = np.clip(smile_score, 0.0, 1.0)
+        else:
+            smile_score = 0.5  # Default neutral
+        
+        return smile_score
     
     def play_audio_feedback(self):
         """Play audio feedback (ding tone)"""
@@ -121,16 +160,18 @@ class SmileCheckCamera:
             # Fallback: print to console
             print("\a", end='', flush=True)  # System beep
     
-    def update_face_tracking(self, detected_faces_landmarks, image_shape, current_time):
+    def update_face_tracking(self, detected_faces, image, current_time):
         """Update tracking for detected faces and calculate smile scores"""
         # Reset all faces as not seen in this frame
         faces_seen = set()
         
-        for face_landmarks in detected_faces_landmarks:
-            # Simple face matching: use center position
-            # In a real implementation, you'd use more sophisticated tracking
-            face_center_x = np.mean([lm.x for lm in face_landmarks])
-            face_center_y = np.mean([lm.y for lm in face_landmarks])
+        for detection in detected_faces:
+            # Get face bounding box from MediaPipe Face Detection
+            bbox = detection.location_data.relative_bounding_box
+            
+            # Calculate face center for tracking
+            face_center_x = bbox.xmin + bbox.width / 2
+            face_center_y = bbox.ymin + bbox.height / 2
             
             # Find closest existing face or create new one
             best_match_id = None
@@ -152,7 +193,7 @@ class SmileCheckCamera:
                 _, _, old_score, _, below_threshold_since = self.face_tracking[best_match_id]
             
             # Calculate smile score for this face
-            smile_score = self.calculate_smile_score(face_landmarks, image_shape)
+            smile_score = self.calculate_smile_score(bbox, image)
             
             # Update below_threshold_since tracking
             if smile_score < self.smile_threshold:
@@ -282,22 +323,29 @@ class SmileCheckCamera:
     def process_frame(self, image):
         """Process a single frame and return annotated image"""
         image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        results = self.face_mesh.process(image_rgb)
+        results = self.face_detection.process(image_rgb)
         
         current_time = time.time()
         
+        h, w = image.shape[:2]
+        
         # Track faces and calculate smile scores
-        if results.multi_face_landmarks:
+        if results.detections:
             # Update face tracking and calculate smile scores in one pass
-            face_landmarks_list = [face_landmarks.landmark for face_landmarks in results.multi_face_landmarks]
-            self.update_face_tracking(face_landmarks_list, image.shape, current_time)
+            self.update_face_tracking(results.detections, image, current_time)
             
             # Draw bounding boxes and smile scores for each detected face
-            h, w = image.shape[:2]
-            for idx, face_landmarks in enumerate(results.multi_face_landmarks):
+            for idx, detection in enumerate(results.detections):
+                # Get face bounding box
+                bbox = detection.location_data.relative_bounding_box
+                x_min = int(bbox.xmin * w)
+                y_min = int(bbox.ymin * h)
+                x_max = int((bbox.xmin + bbox.width) * w)
+                y_max = int((bbox.ymin + bbox.height) * h)
+                
                 # Get face center for matching display
-                face_center_x = np.mean([lm.x for lm in face_landmarks.landmark])
-                face_center_y = np.mean([lm.y for lm in face_landmarks.landmark])
+                face_center_x = bbox.xmin + bbox.width / 2
+                face_center_y = bbox.ymin + bbox.height / 2
                 
                 # Find corresponding face ID in tracking
                 best_match_id = None
@@ -312,27 +360,16 @@ class SmileCheckCamera:
                 if best_match_id is not None:
                     _, _, smile_score, _, _ = self.face_tracking[best_match_id]
                 else:
-                    smile_score = self.calculate_smile_score(face_landmarks.landmark, image.shape)
+                    smile_score = self.calculate_smile_score(bbox, image)
                 
-                # Draw face mesh (optional, can be disabled for performance)
-                # self.mp_draw.draw_landmarks(
-                #     image, face_landmarks, self.mp_face_mesh.FACEMESH_CONTOURS,
-                #     None, self.mp_draw_styles.get_default_face_mesh_contours_style())
-                
-                # Draw bounding box and smile score
-                x_coords = [lm.x * w for lm in face_landmarks.landmark]
-                y_coords = [lm.y * h for lm in face_landmarks.landmark]
-                x_min, x_max = int(min(x_coords)), int(max(x_coords))
-                y_min, y_max = int(min(y_coords)), int(max(y_coords))
-                
-                # Box color based on smile score
+                # Draw bounding box
                 box_color = (0, 255, 0) if smile_score >= self.smile_threshold else (0, 0, 255)
                 cv2.rectangle(image, (x_min, y_min), (x_max, y_max), box_color, 2)
                 
                 # Display smile score
                 face_label = best_match_id if best_match_id is not None else idx
                 score_text = f"Face {face_label}: {smile_score:.2f}"
-                cv2.putText(image, score_text, (x_min, y_min - 10),
+                cv2.putText(image, score_text, (x_min, max(y_min - 10, 20)),
                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, box_color, 2)
         
         # Check smile status and trigger feedback
