@@ -549,15 +549,92 @@ class SmileCheckCamera:
                 else:
                     smile_score = self.calculate_smile_score(bbox, image)
                 
-                # Draw bounding box
-                box_color = (0, 255, 0) if smile_score >= self.smile_threshold else (0, 0, 255)
-                cv2.rectangle(image, (x_min, y_min), (x_max, y_max), box_color, 2)
+                # Determine if this person is smiling
+                is_smiling = smile_score >= self.smile_threshold
                 
-                # Display smile score
-                face_label = best_match_id if best_match_id is not None else idx
-                score_text = f"Face {face_label}: {smile_score:.2f}"
-                cv2.putText(image, score_text, (x_min, max(y_min - 10, 20)),
-                           cv2.FONT_HERSHEY_SIMPLEX, 0.5, box_color, 2)
+                # Draw bounding box with different styles for smiling vs not smiling
+                if is_smiling:
+                    # Green outline for smiling faces (thinner, less prominent)
+                    box_color = (0, 255, 0)
+                    thickness = 2
+                    # Draw the bounding box
+                    cv2.rectangle(image, (x_min, y_min), (x_max, y_max), box_color, thickness)
+                    
+                    # Display smile score
+                    face_label = best_match_id if best_match_id is not None else idx
+                    score_text = f"Face {face_label}: {smile_score:.2f}"
+                    cv2.putText(image, score_text, (x_min, max(y_min - 10, 20)),
+                               cv2.FONT_HERSHEY_SIMPLEX, 0.5, box_color, 2)
+                else:
+                    # RED OUTLINE for non-smiling faces - make it very obvious
+                    box_color = (0, 0, 255)  # Bright red
+                    thickness = 5  # Thick red outline
+                    
+                    # Draw multiple red rectangles for emphasis (glow effect)
+                    for offset in range(3, 0, -1):
+                        cv2.rectangle(image, 
+                                     (x_min-offset, y_min-offset), 
+                                     (x_max+offset, y_max+offset), 
+                                     (0, 0, 255), 2)
+                    
+                    # Main thick red bounding box
+                    cv2.rectangle(image, (x_min, y_min), (x_max, y_max), box_color, thickness)
+                    
+                    # Draw diagonal corner markers for extra visibility
+                    corner_size = 15
+                    # Top-left corner
+                    cv2.line(image, (x_min, y_min), (x_min + corner_size, y_min), box_color, 3)
+                    cv2.line(image, (x_min, y_min), (x_min, y_min + corner_size), box_color, 3)
+                    # Top-right corner
+                    cv2.line(image, (x_max, y_min), (x_max - corner_size, y_min), box_color, 3)
+                    cv2.line(image, (x_max, y_min), (x_max, y_min + corner_size), box_color, 3)
+                    # Bottom-left corner
+                    cv2.line(image, (x_min, y_max), (x_min + corner_size, y_max), box_color, 3)
+                    cv2.line(image, (x_min, y_max), (x_min, y_max - corner_size), box_color, 3)
+                    # Bottom-right corner
+                    cv2.line(image, (x_max, y_max), (x_max - corner_size, y_max), box_color, 3)
+                    cv2.line(image, (x_max, y_max), (x_max, y_max - corner_size), box_color, 3)
+                    
+                    # Display warning message with background
+                    face_label = best_match_id if best_match_id is not None else idx
+                    warning_text = f"Face {face_label}: NOT SMILING!"
+                    score_text = f"Score: {smile_score:.2f}"
+                    
+                    # Calculate text size and position
+                    text_size_warning = cv2.getTextSize(warning_text, cv2.FONT_HERSHEY_SIMPLEX, 0.7, 2)[0]
+                    text_size_score = cv2.getTextSize(score_text, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 2)[0]
+                    
+                    text_x = x_min
+                    text_y_warning = max(y_min - 20, 30)
+                    text_y_score = text_y_warning + text_size_warning[1] + 8
+                    
+                    # Background rectangle for warning text (red background)
+                    cv2.rectangle(image, 
+                                 (text_x - 5, text_y_warning - text_size_warning[1] - 5),
+                                 (text_x + text_size_warning[0] + 5, text_y_warning + 5),
+                                 (0, 0, 255), -1)
+                    
+                    # Background rectangle for score text
+                    cv2.rectangle(image, 
+                                 (text_x - 5, text_y_score - text_size_score[1] - 5),
+                                 (text_x + text_size_score[0] + 5, text_y_score + 5),
+                                 (0, 0, 200), -1)
+                    
+                    # Warning text (white on red)
+                    cv2.putText(image, warning_text, (text_x, text_y_warning),
+                               cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
+                    
+                    # Score text
+                    cv2.putText(image, score_text, (text_x, text_y_score),
+                               cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
+                    
+                    # Draw red indicator circle at top center of face
+                    center_x = (x_min + x_max) // 2
+                    cv2.circle(image, (center_x, y_min - 12), 10, (0, 0, 255), -1)
+                    cv2.circle(image, (center_x, y_min - 12), 10, (255, 255, 255), 2)
+                    # Add exclamation mark
+                    cv2.putText(image, "!", (center_x - 5, y_min - 5),
+                               cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
         
         # Check smile status and trigger feedback
         all_smiling, min_score = self.check_smile_status()
