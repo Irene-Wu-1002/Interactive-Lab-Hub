@@ -60,7 +60,7 @@ class SmileCheckCamera:
         self.led_blink_rate = 0.5  # seconds
         
         # Smile detection parameters
-        self.smile_threshold = 0.65
+        self.smile_threshold = 0.45  # Lowered threshold - more sensitive to smiles
         self.feedback_delay = 1.0  # seconds before triggering feedback
         
         # Audio feedback (using system beep or pygame if available)
@@ -140,7 +140,8 @@ class SmileCheckCamera:
         # When smiling, mouth is wider relative to height
         width_ratio = mouth_width / mouth_height
         # Normal neutral mouth: ratio ~1.5-2.5, smiling: ratio ~2.5-4.0
-        width_score = np.clip((width_ratio - 1.5) / 2.5, 0.0, 1.0)
+        # Made more sensitive - start scoring from lower ratios
+        width_score = np.clip((width_ratio - 1.2) / 2.8, 0.0, 1.0)
         
         # Feature 2: Analyze mouth curvature using histogram
         # Smiling mouths have more pixels in upper portion (teeth/curved shape)
@@ -156,7 +157,8 @@ class SmileCheckCamera:
         brightness_score = 0.0
         if upper_half.size > 0 and lower_half.size > 0:
             brightness_diff = (upper_mean - lower_mean) / 255.0
-            brightness_score = np.clip(brightness_diff * 2.0, 0.0, 0.5)  # Max 0.5 contribution
+            # More sensitive to brightness differences
+            brightness_score = np.clip(brightness_diff * 3.0, 0.0, 0.6)  # Increased sensitivity and max contribution
         
         # Feature 3: Horizontal edge detection for curvature
         # Apply Sobel operator to detect horizontal edges (smile curve)
@@ -167,8 +169,8 @@ class SmileCheckCamera:
         upper_sobel = sobel_x[:mouth_h//2, :] if mouth_h > 4 else sobel_x
         horizontal_edge_strength = np.mean(upper_sobel) if upper_sobel.size > 0 else 0
         
-        # Normalize edge strength
-        edge_score = np.clip(horizontal_edge_strength / 50.0, 0.0, 0.4)  # Max 0.4 contribution
+        # Normalize edge strength - more sensitive
+        edge_score = np.clip(horizontal_edge_strength / 40.0, 0.0, 0.5)  # More sensitive, higher max contribution
         
         # Feature 4: Corner analysis using edge detection
         # Smiling mouths have upward-curving corners
@@ -185,23 +187,23 @@ class SmileCheckCamera:
         if mouth_height > face_height_px * 0.15:  # Mouth is noticeably open
             opening_score = 0.1  # Small positive contribution
         
-        # Combine features with weights (more conservative)
-        # Require multiple indicators to score high
+        # Combine features with weights - adjusted for better sensitivity
         smile_score = (
-            width_score * 0.35 +      # Width ratio is important
-            brightness_score * 0.25 +  # Teeth visibility
+            width_score * 0.40 +      # Width ratio is most important
+            brightness_score * 0.30 +  # Teeth visibility - increased weight
             edge_score * 0.20 +       # Curvature
-            corner_score * 0.10 +      # Edge features
-            opening_score * 0.10       # Opening
+            corner_score * 0.05 +      # Edge features
+            opening_score * 0.05       # Opening
         )
         
-        # Make scoring more conservative - require stronger signals
-        smile_score = smile_score * 1.2  # Slight boost, but still conservative
+        # Boost smile scores to be more sensitive
+        smile_score = smile_score * 1.4  # Increased boost to make it more sensitive
         smile_score = np.clip(smile_score, 0.0, 1.0)
         
-        # Apply threshold scaling - scores below 0.4 are unlikely to be smiles
-        if smile_score < 0.4:
-            smile_score = smile_score * 0.5  # Reduce low scores further
+        # Less aggressive penalty for low scores
+        # Only heavily penalize very low scores (< 0.3)
+        if smile_score < 0.3:
+            smile_score = smile_score * 0.6  # Reduce very low scores, but less aggressively
         
         return smile_score
     
