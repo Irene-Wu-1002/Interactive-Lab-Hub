@@ -245,7 +245,9 @@ class SmileCheckCamera:
             best_match_id = None
             min_distance = float('inf')
             
-            for face_id, (x, y, score, last_time, below_threshold_since) in self.face_tracking.items():
+            for face_id, face_data in self.face_tracking.items():
+                # Handle both old format (5 items) and new format (6 items with smoothed_score)
+                x, y = face_data[0], face_data[1]
                 distance = math.hypot(x - face_center_x, y - face_center_y)
                 if distance < min_distance and distance < 0.1:  # Threshold for matching
                     min_distance = distance
@@ -258,7 +260,11 @@ class SmileCheckCamera:
                 below_threshold_since = None
             else:
                 # Get existing below_threshold_since to preserve timing
-                _, _, old_score, _, below_threshold_since = self.face_tracking[best_match_id]
+                face_data = self.face_tracking[best_match_id]
+                if len(face_data) >= 5:
+                    below_threshold_since = face_data[4]  # below_threshold_since is at index 4
+                else:
+                    below_threshold_since = None
             
             # Calculate smile score for this face
             raw_smile_score = self.calculate_smile_score(bbox, image)
@@ -492,6 +498,10 @@ class SmileCheckCamera:
 
 def main():
     """Main function to run the smile check camera"""
+    # Suppress Qt Wayland warning (doesn't affect functionality)
+    import os
+    os.environ['QT_QPA_PLATFORM'] = 'xcb'
+    
     print("Starting Multi-Person Smile-Check Camera...")
     print("Press 'q' to quit")
     print(f"Feedback threshold: smile score < 0.65 for >1 second")
