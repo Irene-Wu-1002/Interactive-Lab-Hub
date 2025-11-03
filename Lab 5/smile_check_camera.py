@@ -15,6 +15,10 @@ import numpy as np
 import time
 import math
 import os
+import subprocess
+import threading
+import struct
+import tempfile
 
 class SmileCheckCamera:
     def __init__(self):
@@ -59,20 +63,38 @@ class SmileCheckCamera:
         self.last_led_toggle = time.time()
         self.led_blink_rate = 0.5  # seconds
         
+        # Audio feedback state
+        self.last_audio_play = 0
+        self.audio_interval = 2.0  # Play sound every 2 seconds max when someone isn't smiling
+        
         # Smile detection parameters
         self.smile_threshold = 0.48  # Higher threshold - more accurate, reduce false positives
         self.feedback_delay = 1.0  # seconds before triggering feedback
         
-        # Audio feedback (using system beep or pygame if available)
+        # Audio feedback (using pygame, aplay, or system beep)
+        self.use_pygame = False
+        self.use_aplay = False
+        
+        # Try pygame first (best quality)
         try:
             import pygame
             pygame.mixer.init()
-            # Generate a simple beep sound
             self.use_pygame = True
+            print("Audio: Using PyGame for sound notifications")
         except ImportError:
-            self.use_pygame = False
-            print("PyGame not available. Audio feedback disabled.")
-            print("Install with: pip install pygame")
+            # Try aplay (available on Raspberry Pi)
+            try:
+                # Test if aplay is available
+                result = subprocess.run(['which', 'aplay'], 
+                                      capture_output=True, 
+                                      timeout=1)
+                if result.returncode == 0:
+                    self.use_aplay = True
+                    print("Audio: Using aplay for sound notifications")
+                else:
+                    print("Audio: Using system beep (install pygame for better sound)")
+            except:
+                print("Audio: Using system beep (install pygame for better sound)")
     
     def calculate_smile_score(self, face_bbox, image):
         """
@@ -302,26 +324,114 @@ class SmileCheckCamera:
         
         return smile_score
     
-    def play_audio_feedback(self):
-        """Play audio feedback (ding tone)"""
+    def play_audio_feedback(self, play_now=False):
+        """
+        Play audio feedback (notification sound) when someone isn't smiling.
+        
+        Args:
+            play_now: If True, play immediately. If False, respect rate limiting.
+        """
+        current_time = time.time()
+        
+        # Rate limiting - don't play too frequently
+        if not play_now and (current_time - self.last_audio_play) < self.audio_interval:
+            return
+        
+        self.last_audio_play = current_time
+        
         if self.use_pygame:
             try:
                 import pygame
-                # Generate a simple beep (440 Hz for 0.2 seconds)
+                # Generate a notification beep (lower frequency, slightly longer for attention)
                 sample_rate = 44100
-                duration = 0.2
-                frequency = 440
+                duration = 0.3  # Longer duration for better noticeability
+                frequency = 350  # Lower frequency (more noticeable)
+                
                 frames = int(duration * sample_rate)
                 arr = np.zeros((frames, 2), dtype=np.float32)
+                
+                # Create a beep with slight fade-in/fade-out for smoother sound
                 for i in range(frames):
-                    arr[i][0] = np.sin(2 * np.pi * frequency * i / sample_rate)
-                    arr[i][1] = arr[i][0]
+                    # Generate sine wave with envelope for smoother sound
+                    t = i / sample_rate
+                    envelope = 1.0
+                    if i < frames * 0.1:  # Fade in
+                        envelope = i / (frames * 0.1)
+                    elif i > frames * 0.9:  # Fade out
+                        envelope = (frames - i) / (frames * 0.1)
+                    
+                    wave = np.sin(2 * np.pi * frequency * t) * envelope
+                    arr[i][0] = wave
+                    arr[i][1] = wave  # Stereo
+                
+                # Create and play sound
                 sound = pygame.sndarray.make_sound((arr * 32767).astype(np.int16))
                 sound.play()
+                
             except Exception as e:
                 print(f"Audio error: {e}")
+        elif self.use_aplay:
+            # Use aplay to generate a beep on Raspberry Pi
+            try:
+                # Generate a simple beep tone
+                sample_rate = 44100
+                duration = 0.3
+                frequency = 350
+                
+                # Create WAV file data
+                num_samples = int(sample_rate * duration)
+                samples = []
+                
+                for i in range(num_samples):
+                    t = i / sample_rate
+                    envelope = 1.0
+                    if i < num_samples * 0.1:
+                        envelope = i / (num_samples * 0.1)
+                    elif i > num_samples * 0.9:
+                        envelope = (num_samples - i) / (num_samples * 0.1)
+                    
+                    sample = int(32767 * 0.3 * np.sin(2 * np.pi * frequency * t) * envelope)
+                    samples.append(struct.pack('<h', sample))
+                
+                # Write WAV file
+                with tempfile.NamedTemporaryFile(suffix='.wav', delete=False) as tmp:
+                    # WAV header
+                    tmp.write(b'RIFF')
+                    tmp.write(struct.pack('<I', 36 + len(b''.join(samples))))
+                    tmp.write(b'WAVE')
+                    tmp.write(b'fmt ')
+                    tmp.write(struct.pack('<I', 16))
+                    tmp.write(struct.pack('<H', 1))  # PCM
+                    tmp.write(struct.pack('<H', 1))  # Channels
+                    tmp.write(struct.pack('<I', sample_rate))
+                    tmp.write(struct.pack('<I', sample_rate * 2))  # Byte rate
+                    tmp.write(struct.pack('<H', 2))  # Block align
+                    tmp.write(struct.pack('<H', 16))  # Bits per sample
+                    tmp.write(b'data')
+                    tmp.write(struct.pack('<I', len(b''.join(samples))))
+                    tmp.write(b''.join(samples))
+                    tmp_path = tmp.name
+                
+                # Play using aplay
+                subprocess.Popen(['aplay', '-q', tmp_path],
+                               stdout=subprocess.DEVNULL,
+                               stderr=subprocess.DEVNULL)
+                
+                # Clean up file after a short delay
+                def cleanup():
+                    time.sleep(1)
+                    try:
+                        os.unlink(tmp_path)
+                    except:
+                        pass
+                threading.Thread(target=cleanup, daemon=True).start()
+                
+            except Exception as e:
+                print(f"aplay error: {e}")
+                # Fallback to system beep
+                print("\a", end='', flush=True)
         else:
-            # Fallback: print to console
+            # Fallback: system beep
             print("\a", end='', flush=True)  # System beep
     
     def update_face_tracking(self, detected_faces, image, current_time):
@@ -654,10 +764,10 @@ class SmileCheckCamera:
         # Check smile status and trigger feedback
         all_smiling, min_score = self.check_smile_status()
         
-        # Trigger audio feedback (once when feedback activates)
-        if self.feedback_active and self.feedback_start_time:
-            if time.time() - self.feedback_start_time < 0.3:  # Play once at start
-                self.play_audio_feedback()
+        # Trigger audio feedback when someone isn't smiling
+        if self.feedback_active:
+            # Play sound notification (with rate limiting)
+            self.play_audio_feedback()
         
         # Draw feedback overlays
         self.draw_feedback(image)
