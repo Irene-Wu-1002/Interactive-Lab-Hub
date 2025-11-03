@@ -177,6 +177,12 @@ class SmileCheckCamera:
         all_smiling = True
         min_smile_score = 1.0
         
+        # If no faces detected, consider as "all smiling" (no feedback needed)
+        if len(self.face_tracking) == 0:
+            self.feedback_active = False
+            self.feedback_start_time = None
+            return True, 1.0
+        
         for face_id, (x, y, score, last_time, below_threshold_since) in self.face_tracking.items():
             if score is None:
                 all_smiling = False
@@ -356,49 +362,47 @@ def main():
     
     camera = SmileCheckCamera()
     
+    ################################
+    wCam, hCam = 640, 480
+    ################################
+    
     # Open webcam
     cap = cv2.VideoCapture(0)
-    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+    cap.set(3, wCam)
+    cap.set(4, hCam)
     
     if not cap.isOpened():
         print("Error: Could not open webcam")
         return
     
-    pTime = time.time()
-    frame_count = 0
+    pTime = 0
     
-    try:
-        while True:
-            ret, frame = cap.read()
-            if not ret:
-                print("Error: Could not read frame")
-                break
-            
-            # Process frame
-            annotated_frame = camera.process_frame(frame)
-            
-            # Calculate and display FPS
-            frame_count += 1
-            cTime = time.time()
-            fps = frame_count / (cTime - pTime) if (cTime - pTime) > 0 else 0
-            if frame_count % 30 == 0:  # Update FPS display every 30 frames
-                cv2.putText(annotated_frame, f'FPS: {int(fps)}', (10, 30),
-                           cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
-            
-            # Display frame
-            cv2.imshow('Multi-Person Smile-Check Camera', annotated_frame)
-            
-            # Exit on 'q' key
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
-                
-    except KeyboardInterrupt:
-        print("\nInterrupted by user")
-    finally:
-        cap.release()
-        cv2.destroyAllWindows()
-        print("Camera released. Goodbye!")
+    while True:
+        success, img = cap.read()
+        
+        if not success:
+            print("Error: Could not read frame")
+            break
+        
+        # Process frame - this adds annotations
+        img = camera.process_frame(img)
+        
+        # Calculate and display FPS
+        cTime = time.time()
+        fps = 1 / (cTime - pTime) if pTime > 0 else 0
+        pTime = cTime
+        cv2.putText(img, f'FPS: {int(fps)}', (10, 30),
+                   cv2.FONT_HERSHEY_COMPLEX, 1, (255, 0, 0), 3)
+        
+        # Display frame - always show, even if no faces detected
+        cv2.imshow("Img", img)
+        
+        # Exit on 'q' key
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+    
+    cap.release()
+    cv2.destroyAllWindows()
 
 if __name__ == "__main__":
     main()
