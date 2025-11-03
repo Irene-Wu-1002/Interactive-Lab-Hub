@@ -60,7 +60,7 @@ class SmileCheckCamera:
         self.led_blink_rate = 0.5  # seconds
         
         # Smile detection parameters
-        self.smile_threshold = 0.40  # Higher threshold - more accurate, reduce false positives
+        self.smile_threshold = 0.50  # Higher threshold - more accurate, reduce false positives
         self.feedback_delay = 1.0  # seconds before triggering feedback
         
         # Audio feedback (using system beep or pygame if available)
