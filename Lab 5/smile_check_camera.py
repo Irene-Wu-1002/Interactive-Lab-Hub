@@ -1,7 +1,7 @@
 """
 Multi-Person Smile-Check Camera
 A simple interaction prototype that detects multiple faces and checks if everyone is smiling.
-Uses MediaPipe Face Detection (BlazeFace) for face detection and image analysis for smile estimation.
+Uses OpenCV Haar Cascade for face detection and image analysis for smile estimation.
 
 Interaction Concept:
 - Detects multiple faces simultaneously
@@ -11,21 +11,39 @@ Interaction Concept:
 """
 
 import cv2
-import mediapipe as mp
 import numpy as np
 import time
 import math
+import os
 
 class SmileCheckCamera:
     def __init__(self):
-        # Initialize MediaPipe Face Detection (BlazeFace)
-        # Using face_detection instead of face_mesh to avoid UnicodeDecodeError
-        self.mp_face_detection = mp.solutions.face_detection
-        self.face_detection = self.mp_face_detection.FaceDetection(
-            model_selection=0,  # 0 for short-range (0-5 meters), 1 for full-range
-            min_detection_confidence=0.5
-        )
-        self.mp_draw = mp.solutions.drawing_utils
+        # Initialize OpenCV Haar Cascade Face Detection
+        # This is more reliable on Raspberry Pi and doesn't require MediaPipe
+        cascade_path = cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
+        
+        # Check if cascade file exists, if not try alternative paths
+        if not os.path.exists(cascade_path):
+            # Try common alternative paths on Raspberry Pi
+            alt_paths = [
+                '/usr/share/opencv4/haarcascades/haarcascade_frontalface_default.xml',
+                '/usr/local/share/opencv4/haarcascades/haarcascade_frontalface_default.xml',
+                'haarcascade_frontalface_default.xml'
+            ]
+            for alt_path in alt_paths:
+                if os.path.exists(alt_path):
+                    cascade_path = alt_path
+                    break
+        
+        try:
+            self.face_cascade = cv2.CascadeClassifier(cascade_path)
+            if self.face_cascade.empty():
+                raise FileNotFoundError(f"Haar cascade file not found: {cascade_path}")
+            print(f"Loaded face detector from: {cascade_path}")
+        except Exception as e:
+            print(f"Error loading face cascade: {e}")
+            print("Falling back to default OpenCV cascade path...")
+            self.face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
         
         # Face tracking: store (face_id, smile_score, last_update_time, below_threshold_since)
         # below_threshold_since: timestamp when face first dropped below threshold (None if above threshold)
@@ -63,11 +81,10 @@ class SmileCheckCamera:
         h, w = image.shape[:2]
         
         # Extract face bounding box coordinates
-        # MediaPipe returns normalized coordinates (xmin, ymin, width, height)
-        x_min = int(face_bbox.xmin * w)
-        y_min = int(face_bbox.ymin * h)
-        x_max = int((face_bbox.xmin + face_bbox.width) * w)
-        y_max = int((face_bbox.ymin + face_bbox.height) * h)
+        # OpenCV returns (x, y, width, height)
+        x_min, y_min, face_width, face_height = face_bbox
+        x_max = x_min + face_width
+        y_max = y_min + face_height
         
         # Ensure coordinates are within image bounds
         x_min = max(0, x_min)
@@ -165,13 +182,14 @@ class SmileCheckCamera:
         # Reset all faces as not seen in this frame
         faces_seen = set()
         
-        for detection in detected_faces:
-            # Get face bounding box from MediaPipe Face Detection
-            bbox = detection.location_data.relative_bounding_box
+        for bbox in detected_faces:
+            # Get face bounding box from OpenCV (x, y, width, height)
+            x_min, y_min, face_width, face_height = bbox
             
-            # Calculate face center for tracking
-            face_center_x = bbox.xmin + bbox.width / 2
-            face_center_y = bbox.ymin + bbox.height / 2
+            # Calculate face center for tracking (normalized coordinates for consistency)
+            h, w = image.shape[:2]
+            face_center_x = (x_min + face_width / 2) / w
+            face_center_y = (y_min + face_height / 2) / h
             
             # Find closest existing face or create new one
             best_match_id = None
@@ -322,30 +340,38 @@ class SmileCheckCamera:
     
     def process_frame(self, image):
         """Process a single frame and return annotated image"""
-        image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        results = self.face_detection.process(image_rgb)
-        
         current_time = time.time()
-        
         h, w = image.shape[:2]
         
+        # Convert to grayscale for face detection (Haar Cascade works on grayscale)
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        
+        # Detect faces using Haar Cascade
+        # scaleFactor: how much the image size is reduced at each scale
+        # minNeighbors: how many neighbors each candidate rectangle should have
+        # minSize: minimum possible object size
+        faces = self.face_cascade.detectMultiScale(
+            gray,
+            scaleFactor=1.1,
+            minNeighbors=5,
+            minSize=(30, 30),
+            flags=cv2.CASCADE_SCALE_IMAGE
+        )
+        
         # Track faces and calculate smile scores
-        if results.detections:
+        if len(faces) > 0:
             # Update face tracking and calculate smile scores in one pass
-            self.update_face_tracking(results.detections, image, current_time)
+            self.update_face_tracking(faces, image, current_time)
             
             # Draw bounding boxes and smile scores for each detected face
-            for idx, detection in enumerate(results.detections):
-                # Get face bounding box
-                bbox = detection.location_data.relative_bounding_box
-                x_min = int(bbox.xmin * w)
-                y_min = int(bbox.ymin * h)
-                x_max = int((bbox.xmin + bbox.width) * w)
-                y_max = int((bbox.ymin + bbox.height) * h)
+            for idx, bbox in enumerate(faces):
+                x_min, y_min, face_width, face_height = bbox
+                x_max = x_min + face_width
+                y_max = y_min + face_height
                 
-                # Get face center for matching display
-                face_center_x = bbox.xmin + bbox.width / 2
-                face_center_y = bbox.ymin + bbox.height / 2
+                # Get face center for matching display (normalized)
+                face_center_x = (x_min + face_width / 2) / w
+                face_center_y = (y_min + face_height / 2) / h
                 
                 # Find corresponding face ID in tracking
                 best_match_id = None
