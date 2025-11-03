@@ -45,10 +45,12 @@ class SmileCheckCamera:
             print("Falling back to default OpenCV cascade path...")
             self.face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
         
-        # Face tracking: store (face_id, smile_score, last_update_time, below_threshold_since)
+        # Face tracking: store (face_id, smile_score, last_update_time, below_threshold_since, smoothed_score)
         # below_threshold_since: timestamp when face first dropped below threshold (None if above threshold)
+        # smoothed_score: temporally smoothed smile score to reduce jitter
         self.face_tracking = {}
         self.face_id_counter = 0
+        self.smoothing_factor = 0.7  # Higher = more smoothing (0.7 means 70% old, 30% new)
         
         # Feedback state
         self.feedback_active = False
@@ -74,14 +76,13 @@ class SmileCheckCamera:
     
     def calculate_smile_score(self, face_bbox, image):
         """
-        Calculate smile score based on mouth region analysis within detected face.
-        Uses edge detection and contour analysis on the mouth region.
-        Higher score indicates a smile.
+        Calculate smile score based on mouth region analysis.
+        Uses multiple features: mouth width-to-height ratio, corner positions, and curvature analysis.
+        More conservative scoring to reduce false positives.
         """
         h, w = image.shape[:2]
         
         # Extract face bounding box coordinates
-        # OpenCV returns (x, y, width, height)
         x_min, y_min, face_width, face_height = face_bbox
         x_max = x_min + face_width
         y_max = y_min + face_height
@@ -92,66 +93,115 @@ class SmileCheckCamera:
         x_max = min(w, x_max)
         y_max = min(h, y_max)
         
-        if x_max <= x_min or y_max <= y_min:
-            return 0.5  # Default neutral
+        if x_max <= x_min or y_max <= y_min or face_width < 30 or face_height < 30:
+            return 0.3  # Default to lower score if face too small
         
         # Extract face region
         face_region = image[y_min:y_max, x_min:x_max]
         
         if face_region.size == 0:
-            return 0.5
+            return 0.3
         
         # Estimate mouth region (typically in lower 1/3 of face, centered horizontally)
-        face_height = y_max - y_min
-        face_width = x_max - x_min
+        face_height_px = y_max - y_min
+        face_width_px = x_max - x_min
         
-        # Mouth region is approximately in the lower third of the face
-        mouth_y_start = int(face_height * 0.55)
-        mouth_y_end = int(face_height * 0.85)
-        mouth_x_start = int(face_width * 0.25)
-        mouth_x_end = int(face_width * 0.75)
+        # Mouth region: lower portion of face
+        mouth_y_start = int(face_height_px * 0.55)
+        mouth_y_end = int(face_height_px * 0.90)
+        mouth_x_start = int(face_width_px * 0.20)
+        mouth_x_end = int(face_width_px * 0.80)
         
         if mouth_y_end <= mouth_y_start or mouth_x_end <= mouth_x_start:
-            return 0.5
+            return 0.3
         
         mouth_region = face_region[mouth_y_start:mouth_y_end, mouth_x_start:mouth_x_end]
         
         if mouth_region.size == 0:
-            return 0.5
+            return 0.3
         
-        # Convert to grayscale if needed
+        # Convert to grayscale
         if len(mouth_region.shape) == 3:
             mouth_gray = cv2.cvtColor(mouth_region, cv2.COLOR_BGR2GRAY)
         else:
             mouth_gray = mouth_region
         
-        # Apply edge detection
-        edges = cv2.Canny(mouth_gray, 50, 150)
+        # Apply Gaussian blur to reduce noise
+        mouth_gray = cv2.GaussianBlur(mouth_gray, (5, 5), 0)
         
-        # Calculate horizontal edge density (smiles create more horizontal edges)
-        # Count horizontal edges (smiles curve upward)
-        horizontal_kernel = np.array([[-1, -1, -1],
-                                      [ 2,  2,  2],
-                                      [-1, -1, -1]])
-        horizontal_edges = cv2.filter2D(edges, -1, horizontal_kernel)
-        
-        # Calculate metrics
-        total_edges = np.sum(edges > 0)
-        horizontal_edge_strength = np.sum(horizontal_edges > 0)
-        
-        # Smile heuristic: higher horizontal edge ratio + mouth width
-        mouth_width = mouth_x_end - mouth_x_start
+        # Calculate mouth dimensions
         mouth_height = mouth_y_end - mouth_y_start
+        mouth_width = mouth_x_end - mouth_x_start
         
-        if total_edges > 0 and mouth_height > 0:
-            edge_ratio = horizontal_edge_strength / total_edges if total_edges > 0 else 0
-            width_ratio = mouth_width / mouth_height
-            
-            # Combine metrics: wider mouth and upward curve suggests smile
-            smile_score = (edge_ratio * 0.6 + min(width_ratio / 3.0, 1.0) * 0.4)
-            smile_score = np.clip(smile_score, 0.0, 1.0)
-        else:
-            smile_score = 0.5  # Default neutral
+        if mouth_height == 0 or mouth_width == 0:
+            return 0.3
+        
+        # Feature 1: Mouth width-to-height ratio
+        # When smiling, mouth is wider relative to height
+        width_ratio = mouth_width / mouth_height
+        # Normal neutral mouth: ratio ~1.5-2.5, smiling: ratio ~2.5-4.0
+        width_score = np.clip((width_ratio - 1.5) / 2.5, 0.0, 1.0)
+        
+        # Feature 2: Analyze mouth curvature using histogram
+        # Smiling mouths have more pixels in upper portion (teeth/curved shape)
+        mouth_h, mouth_w = mouth_gray.shape
+        upper_half = mouth_gray[:mouth_h//2, :]
+        lower_half = mouth_gray[mouth_h//2:, :]
+        
+        # Calculate mean brightness (smiles often show teeth = brighter upper half)
+        upper_mean = np.mean(upper_half) if upper_half.size > 0 else 0
+        lower_mean = np.mean(lower_half) if lower_half.size > 0 else 0
+        
+        # When smiling, upper half tends to be brighter (teeth visible)
+        brightness_score = 0.0
+        if upper_half.size > 0 and lower_half.size > 0:
+            brightness_diff = (upper_mean - lower_mean) / 255.0
+            brightness_score = np.clip(brightness_diff * 2.0, 0.0, 0.5)  # Max 0.5 contribution
+        
+        # Feature 3: Horizontal edge detection for curvature
+        # Apply Sobel operator to detect horizontal edges (smile curve)
+        sobel_x = cv2.Sobel(mouth_gray, cv2.CV_64F, 1, 0, ksize=3)
+        sobel_x = np.abs(sobel_x)
+        
+        # Focus on upper portion for curvature analysis
+        upper_sobel = sobel_x[:mouth_h//2, :] if mouth_h > 4 else sobel_x
+        horizontal_edge_strength = np.mean(upper_sobel) if upper_sobel.size > 0 else 0
+        
+        # Normalize edge strength
+        edge_score = np.clip(horizontal_edge_strength / 50.0, 0.0, 0.4)  # Max 0.4 contribution
+        
+        # Feature 4: Corner analysis using edge detection
+        # Smiling mouths have upward-curving corners
+        corners = cv2.goodFeaturesToTrack(mouth_gray, maxCorners=10, qualityLevel=0.01, minDistance=10)
+        corner_score = 0.0
+        if corners is not None and len(corners) > 0:
+            # If we detect corners (which happens more when smiling), add small score
+            corner_score = min(len(corners) / 10.0, 0.2)  # Max 0.2 contribution
+        
+        # Feature 5: Mouth opening analysis
+        # Smiling mouths are slightly open (height slightly increases)
+        # Closed mouth when neutral, slightly open when smiling
+        opening_score = 0.0
+        if mouth_height > face_height_px * 0.15:  # Mouth is noticeably open
+            opening_score = 0.1  # Small positive contribution
+        
+        # Combine features with weights (more conservative)
+        # Require multiple indicators to score high
+        smile_score = (
+            width_score * 0.35 +      # Width ratio is important
+            brightness_score * 0.25 +  # Teeth visibility
+            edge_score * 0.20 +       # Curvature
+            corner_score * 0.10 +      # Edge features
+            opening_score * 0.10       # Opening
+        )
+        
+        # Make scoring more conservative - require stronger signals
+        smile_score = smile_score * 1.2  # Slight boost, but still conservative
+        smile_score = np.clip(smile_score, 0.0, 1.0)
+        
+        # Apply threshold scaling - scores below 0.4 are unlikely to be smiles
+        if smile_score < 0.4:
+            smile_score = smile_score * 0.5  # Reduce low scores further
         
         return smile_score
     
@@ -211,7 +261,17 @@ class SmileCheckCamera:
                 _, _, old_score, _, below_threshold_since = self.face_tracking[best_match_id]
             
             # Calculate smile score for this face
-            smile_score = self.calculate_smile_score(bbox, image)
+            raw_smile_score = self.calculate_smile_score(bbox, image)
+            
+            # Apply temporal smoothing to reduce jitter
+            if best_match_id in self.face_tracking:
+                old_smoothed_score = self.face_tracking[best_match_id][5] if len(self.face_tracking[best_match_id]) > 5 else raw_smile_score
+                smoothed_score = (self.smoothing_factor * old_smoothed_score + (1 - self.smoothing_factor) * raw_smile_score)
+            else:
+                smoothed_score = raw_smile_score
+            
+            # Use smoothed score for threshold checking
+            smile_score = smoothed_score
             
             # Update below_threshold_since tracking
             if smile_score < self.smile_threshold:
@@ -223,7 +283,7 @@ class SmileCheckCamera:
                 below_threshold_since = None
             
             faces_seen.add(best_match_id)
-            self.face_tracking[best_match_id] = (face_center_x, face_center_y, smile_score, current_time, below_threshold_since)
+            self.face_tracking[best_match_id] = (face_center_x, face_center_y, smile_score, current_time, below_threshold_since, smoothed_score)
         
         # Remove faces not seen in this frame
         faces_to_remove = [fid for fid in self.face_tracking.keys() if fid not in faces_seen]
@@ -242,7 +302,13 @@ class SmileCheckCamera:
             self.feedback_start_time = None
             return True, 1.0
         
-        for face_id, (x, y, score, last_time, below_threshold_since) in self.face_tracking.items():
+        for face_id, face_data in self.face_tracking.items():
+            # Handle both old format (5 items) and new format (6 items with smoothed_score)
+            if len(face_data) == 6:
+                x, y, score, last_time, below_threshold_since, smoothed_score = face_data
+            else:
+                x, y, score, last_time, below_threshold_since = face_data[:5]
+                smoothed_score = score
             if score is None:
                 all_smiling = False
                 min_smile_score = 0.0
@@ -278,7 +344,12 @@ class SmileCheckCamera:
         
         # Calculate overall smile status
         if len(self.face_tracking) > 0:
-            scores = [score for _, _, score, _, _ in self.face_tracking.values() if score is not None]
+            scores = []
+            for face_data in self.face_tracking.values():
+                if len(face_data) >= 3:
+                    score = face_data[2]  # smile_score is at index 2
+                    if score is not None:
+                        scores.append(score)
             if scores:
                 avg_score = np.mean(scores)
                 min_score = min(scores)
@@ -376,7 +447,8 @@ class SmileCheckCamera:
                 # Find corresponding face ID in tracking
                 best_match_id = None
                 min_distance = float('inf')
-                for face_id, (x, y, score, last_time, below_threshold_since) in self.face_tracking.items():
+                for face_id, face_data in self.face_tracking.items():
+                    x, y = face_data[0], face_data[1]
                     distance = math.hypot(x - face_center_x, y - face_center_y)
                     if distance < min_distance and distance < 0.1:
                         min_distance = distance
@@ -384,7 +456,8 @@ class SmileCheckCamera:
                 
                 # Get smile score for this face
                 if best_match_id is not None:
-                    _, _, smile_score, _, _ = self.face_tracking[best_match_id]
+                    face_data = self.face_tracking[best_match_id]
+                    smile_score = face_data[2] if len(face_data) >= 3 else 0.3
                 else:
                     smile_score = self.calculate_smile_score(bbox, image)
                 
