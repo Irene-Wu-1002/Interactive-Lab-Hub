@@ -60,7 +60,7 @@ class SmileCheckCamera:
         self.led_blink_rate = 0.5  # seconds
         
         # Smile detection parameters
-        self.smile_threshold = 0.45  # Lowered threshold - more sensitive to smiles
+        self.smile_threshold = 0.35  # Lower threshold - less strict, more lenient
         self.feedback_delay = 1.0  # seconds before triggering feedback
         
         # Audio feedback (using system beep or pygame if available)
@@ -169,7 +169,11 @@ class SmileCheckCamera:
         curvature_score = 0.0
         if upper_gradient > 0:
             gradient_ratio = upper_gradient / (upper_gradient + lower_gradient + 1e-6)
-            curvature_score = np.clip((gradient_ratio - 0.4) * 2.5, 0.0, 1.0)  # Score higher if upper has more gradient
+            # More lenient: start scoring from lower gradient ratios
+            curvature_score = np.clip((gradient_ratio - 0.3) * 2.0, 0.0, 1.0)  # Less strict threshold
+        # Also give some score if there's any notable gradient difference
+        if abs(upper_gradient - lower_gradient) > 5:
+            curvature_score = max(curvature_score, 0.3)  # Minimum score if gradients differ significantly
         
         # Feature 2: Analyze mouth shape using contour detection
         # Smiling mouths have a distinct upward-curving contour
@@ -180,20 +184,29 @@ class SmileCheckCamera:
         if len(contours) > 0:
             # Find the largest contour (likely the mouth outline)
             largest_contour = max(contours, key=cv2.contourArea)
-            if cv2.contourArea(largest_contour) > mouth_w * mouth_h * 0.1:
+            # Lower threshold for contour area to be more lenient
+            if cv2.contourArea(largest_contour) > mouth_w * mouth_h * 0.05:  # Reduced from 0.1
                 # Fit a curve/ellipse to the contour
                 if len(largest_contour) >= 5:
-                    ellipse = cv2.fitEllipse(largest_contour)
-                    # Get ellipse center and axes
-                    center, axes, angle = ellipse
-                    major_axis, minor_axis = max(axes), min(axes)
-                    
-                    # For a smile, the ellipse should be wider (major axis horizontal)
-                    # and angled upward (negative angle indicates upward curve)
-                    if major_axis > 0:
-                        axis_ratio = minor_axis / major_axis
-                        # Wider ellipses (smaller ratio) suggest a smile
-                        shape_score = np.clip((0.6 - axis_ratio) * 2.0, 0.0, 0.5)
+                    try:
+                        ellipse = cv2.fitEllipse(largest_contour)
+                        # Get ellipse center and axes
+                        center, axes, angle = ellipse
+                        major_axis, minor_axis = max(axes), min(axes)
+                        
+                        # For a smile, the ellipse should be wider (major axis horizontal)
+                        # and angled upward (negative angle indicates upward curve)
+                        if major_axis > 0:
+                            axis_ratio = minor_axis / major_axis
+                            # Wider ellipses (smaller ratio) suggest a smile - more lenient
+                            shape_score = np.clip((0.7 - axis_ratio) * 2.5, 0.0, 0.6)  # More lenient, higher max
+                    except:
+                        # If ellipse fitting fails, still give some score for having a contour
+                        shape_score = 0.2
+            else:
+                # Even if contour is small, if there are multiple contours, it might indicate a smile
+                if len(contours) >= 2:
+                    shape_score = 0.15
         
         # Feature 3: Corner elevation analysis
         # Smiling mouths have corners that are elevated relative to center
@@ -219,7 +232,15 @@ class SmileCheckCamera:
             left_elevation = abs(left_corner_top - left_corner_bottom) / 255.0
             right_elevation = abs(right_corner_top - right_corner_bottom) / 255.0
             avg_elevation = (left_elevation + right_elevation) / 2.0
-            corner_elevation = np.clip(avg_elevation * 3.0, 0.0, 0.6)
+            # More sensitive to elevation differences
+            corner_elevation = np.clip(avg_elevation * 4.0, 0.0, 0.7)  # Increased sensitivity and max
+        
+        # Also give score if corners are simply different from center (even if not elevated)
+        if center_top > 0:
+            corner_diff_left = abs(left_corner_top - center_top) / 255.0
+            corner_diff_right = abs(right_corner_top - center_top) / 255.0
+            avg_corner_diff = (corner_diff_left + corner_diff_right) / 2.0
+            corner_elevation = max(corner_elevation, np.clip(avg_corner_diff * 2.0, 0.0, 0.4))
         
         # Feature 4: Width increase (but NOT due to opening)
         # Smiles widen the mouth without necessarily opening it much
@@ -230,33 +251,39 @@ class SmileCheckCamera:
         width_ratio = mouth_width / mouth_height if mouth_height > 0 else 1.0
         
         # Smile should have good width ratio but not be too open
-        # Ideal smile: wider but not excessively open (ratio ~2-3)
+        # More lenient: accept wider range of ratios
         width_score = 0.0
-        if 2.0 <= width_ratio <= 4.0:
-            # Good range for smiles
-            width_score = np.clip((width_ratio - 1.8) / 2.2, 0.0, 0.4)
-        elif width_ratio > 4.0:
-            # Too open - likely just opening mouth, not smiling
-            width_score = 0.0
+        if 1.8 <= width_ratio <= 5.0:  # Expanded range - more lenient
+            # Good range for smiles - wider acceptance
+            width_score = np.clip((width_ratio - 1.5) / 3.5, 0.0, 0.5)  # Higher max score
+        elif width_ratio > 5.0:
+            # Too open - but still give small score (might be a big smile)
+            width_score = 0.1
         else:
-            # Too narrow
-            width_score = np.clip(width_ratio / 2.0, 0.0, 0.3)
+            # Too narrow, but still give some score
+            width_score = np.clip(width_ratio / 2.5, 0.0, 0.4)  # More lenient for narrow mouths
         
         # Combine features with emphasis on curvature and shape (not opening)
+        # Made more lenient - if any feature suggests a smile, give it more credit
         smile_score = (
-            curvature_score * 0.40 +    # Curvature is most important (40%)
+            curvature_score * 0.35 +    # Curvature (35%)
             shape_score * 0.30 +         # Shape analysis (30%)
             corner_elevation * 0.20 +    # Corner elevation (20%)
-            width_score * 0.10           # Width (but not opening) (10%)
+            width_score * 0.15           # Width - increased weight (15%)
         )
         
-        # Boost the score
-        smile_score = smile_score * 1.3
+        # Add bonus if multiple features indicate smile
+        active_features = sum([1 for score in [curvature_score, shape_score, corner_elevation, width_score] if score > 0.2])
+        if active_features >= 2:
+            smile_score += 0.15  # Bonus for multiple indicators
+        
+        # Boost the score more aggressively
+        smile_score = smile_score * 1.5  # Increased from 1.3
         smile_score = np.clip(smile_score, 0.0, 1.0)
         
-        # Apply gentle penalty only for very low scores
-        if smile_score < 0.25:
-            smile_score = smile_score * 0.7
+        # Only apply penalty for very low scores
+        if smile_score < 0.2:
+            smile_score = smile_score * 0.8  # Less aggressive penalty
         
         return smile_score
     
