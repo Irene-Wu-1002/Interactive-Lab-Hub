@@ -60,7 +60,7 @@ class SmileCheckCamera:
         self.led_blink_rate = 0.5  # seconds
         
         # Smile detection parameters
-        self.smile_threshold = 0.50  # Higher threshold - more strict, reduce false positives
+        self.smile_threshold = 0.42  # Balanced threshold - moderate strictness
         self.feedback_delay = 1.0  # seconds before triggering feedback
         
         # Audio feedback (using system beep or pygame if available)
@@ -166,15 +166,15 @@ class SmileCheckCamera:
         lower_gradient = np.mean(lower_sobel_y) if lower_sobel_y.size > 0 else 0
         
         # Smile has stronger gradients in upper portion (upward curve)
-        # Made stricter - require more pronounced curvature
+        # Balanced - require noticeable curvature but not too strict
         curvature_score = 0.0
         if upper_gradient > 0:
             gradient_ratio = upper_gradient / (upper_gradient + lower_gradient + 1e-6)
-            # More strict: require clearer gradient difference (higher threshold)
-            curvature_score = np.clip((gradient_ratio - 0.45) * 2.5, 0.0, 1.0)  # Stricter threshold
-        # Only give minimum score if gradient difference is very significant
-        if abs(upper_gradient - lower_gradient) > 15:  # Increased from 5 to 15
-            curvature_score = max(curvature_score, 0.2)  # Lower minimum score
+            # Balanced threshold - not too strict, not too lenient
+            curvature_score = np.clip((gradient_ratio - 0.38) * 2.2, 0.0, 1.0)  # Balanced threshold
+        # Give minimum score if gradient difference is notable
+        if abs(upper_gradient - lower_gradient) > 10:  # Balanced threshold
+            curvature_score = max(curvature_score, 0.25)  # Moderate minimum score
         
         # Feature 2: Analyze mouth shape using contour detection
         # Smiling mouths have a distinct upward-curving contour
@@ -252,48 +252,49 @@ class SmileCheckCamera:
         width_ratio = mouth_width / mouth_height if mouth_height > 0 else 1.0
         
         # Smile should have good width ratio but not be too open
-        # Made stricter - penalize excessive opening (likely not a smile)
+        # Balanced - accept reasonable range but penalize excessive opening
         width_score = 0.0
-        if 2.0 <= width_ratio <= 3.5:  # Narrower ideal range
+        if 1.9 <= width_ratio <= 3.8:  # Moderate ideal range
             # Good range for smiles
-            width_score = np.clip((width_ratio - 1.8) / 1.7, 0.0, 0.4)  # Lower max score
-        elif 3.5 < width_ratio <= 4.5:
-            # Acceptable but not ideal (might be opening mouth)
-            width_score = np.clip((4.5 - width_ratio) / 1.0, 0.0, 0.2)  # Lower score
-        elif width_ratio > 4.5:
-            # Too open - likely just opening mouth, heavily penalize
-            width_score = 0.0
+            width_score = np.clip((width_ratio - 1.7) / 2.1, 0.0, 0.45)  # Moderate max score
+        elif 3.8 < width_ratio <= 4.8:
+            # Acceptable but less ideal (might be opening mouth or big smile)
+            width_score = np.clip((4.8 - width_ratio) / 1.0, 0.0, 0.25)  # Lower score
+        elif width_ratio > 4.8:
+            # Too open - likely just opening mouth, penalize
+            width_score = 0.05  # Very small score instead of 0
         else:
-            # Too narrow - give minimal score
-            width_score = np.clip(width_ratio / 3.0, 0.0, 0.25)  # Lower max for narrow
+            # Too narrow - give moderate score
+            width_score = np.clip(width_ratio / 2.8, 0.0, 0.35)  # Moderate max for narrow
         
         # Combine features with emphasis on curvature and shape (not opening)
-        # Made stricter - require multiple strong indicators
+        # Balanced - require good indicators but not overly strict
         smile_score = (
-            curvature_score * 0.40 +    # Curvature is most important (40%)
-            shape_score * 0.30 +         # Shape analysis (30%)
-            corner_elevation * 0.20 +    # Corner elevation (20%)
-            width_score * 0.10           # Width - reduced weight (10%)
+            curvature_score * 0.38 +    # Curvature is most important (38%)
+            shape_score * 0.28 +         # Shape analysis (28%)
+            corner_elevation * 0.22 +    # Corner elevation (22%)
+            width_score * 0.12           # Width - moderate weight (12%)
         )
         
-        # Stricter bonus - require multiple STRONG indicators, not just any indicators
-        active_features = sum([1 for score in [curvature_score, shape_score, corner_elevation, width_score] if score > 0.4])  # Higher threshold
-        if active_features >= 3:  # Require 3 instead of 2
-            smile_score += 0.1  # Smaller bonus
+        # Balanced bonus - reward multiple indicators
+        active_features = sum([1 for score in [curvature_score, shape_score, corner_elevation, width_score] if score > 0.3])  # Moderate threshold
+        if active_features >= 3:  # Require 3 strong indicators
+            smile_score += 0.12  # Moderate bonus
         elif active_features >= 2:
-            smile_score += 0.05  # Very small bonus
+            smile_score += 0.08  # Small bonus
         
-        # Less aggressive boost - more conservative
-        smile_score = smile_score * 1.2  # Reduced from 1.5
+        # Moderate boost
+        smile_score = smile_score * 1.35  # Balanced multiplier
         smile_score = np.clip(smile_score, 0.0, 1.0)
         
-        # Apply penalty for scores that aren't clearly smiles
-        if smile_score < 0.4:
-            smile_score = smile_score * 0.7  # More aggressive penalty for low scores
+        # Apply moderate penalty for low scores
+        if smile_score < 0.35:
+            smile_score = smile_score * 0.75  # Moderate penalty for very low scores
         
-        # Additional check: if width_score is high but curvature is low, it's probably just opening mouth, not smiling
-        if width_score > 0.5 and curvature_score < 0.3:
-            smile_score *= 0.6  # Penalize mouth opening without curvature
+        # Additional check: if width_score is high but curvature is low, it's probably just opening mouth
+        # But make it less aggressive
+        if width_score > 0.6 and curvature_score < 0.25:
+            smile_score *= 0.7  # Moderate penalty for mouth opening without curvature
         
         return smile_score
     
