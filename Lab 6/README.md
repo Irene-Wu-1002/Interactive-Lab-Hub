@@ -1,6 +1,133 @@
-### Color Scavenger Hunt
-
+# Distributed Interaction
 **Team Members:** Jessica Hsiao (dh779), Irene Wu (yw2785), Melody Huang (yh2353), Dingran Dai (dd699)
+
+## Overview
+
+Build interactive systems where **multiple devices communicate over a network** using MQTT messaging. Work in teams of 3+ with Raspberry Pis.
+
+**Parts:**
+- A: Learn MQTT messaging
+- B: Try collaborative pixel grid demo  
+- C: Build your own distributed system
+
+---
+
+## Part A: MQTT Messaging
+<details>
+    <summary>Setup</summary>
+MQTT = lightweight messaging for IoT. Publish/subscribe model with central broker.
+
+**Concepts:**
+- **Broker**: `farlab.infosci.cornell.edu:1883`
+- **Topic**: Like `IDD/bedroom/temperature` (use `#` wildcard)
+- **Publish/Subscribe**: Send and receive messages
+
+**Install MQTT tools on your Pi:**
+```bash
+sudo apt-get update
+sudo apt-get install -y mosquitto-clients
+```
+
+**Test it:**
+
+**Subscribe to messages (listener):**
+```bash
+mosquitto_sub -h farlab.infosci.cornell.edu -p 1883 -t 'IDD/#' -u idd -P 'device@theFarm'
+```
+
+**Publish a message (sender):**
+```bash
+mosquitto_pub -h farlab.infosci.cornell.edu -p 1883 -t 'IDD/test/yourname' -m 'Hello!' -u idd -P 'device@theFarm'
+```
+
+> **💡 Tips:**
+> - Replace `yourname` with your actual name in the topic
+> - Use single quotes around the password: `'device@theFarm'`
+
+**🔧 Debug Tool:** View all MQTT messages in real-time at `http://farlab.infosci.cornell.edu:5001`
+
+![MQTT Explorer showing messages](imgs/MQTT-explorer.png)
+
+</details>
+
+**💡 Brainstorm 5 ideas for messaging between devices**
+1. Storyteller game: Start randomly from a person’s pi, using a word chain structure. Participants collaboratively weave a narrative by linking words, where each subsequent word must begin with the last letter of the previous one. 
+2. An online forum, such as Poll Everywhere, where everyone can participate in a real-time discussion. A central moderator publishes the questions or topics, and all the other users can express their opinion through pi.
+3. School announcements: whenever the school sends out an announcement, it’s delivered directly to each student’s device. Students can also use the device to share useful information with each other.
+4. Personal Data Sharing: sync all personal device data, such as notes, health data, and plans, across all personal devices without being limited to a single brand.
+5. When 2+ Pis come within Wi-Fi range, they automatically open a chat window which could exchange personal symbols (emojis, sound or text that represents its user’s mood of the day). 
+
+
+---
+
+## Part B. Part B: Collaborative Pixel Grid
+<details>
+    <summary>Setup</summary>
+Each Pi = one pixel, controlled by RGB sensor, displayed in real-time grid.
+
+**Architecture:** `Pi (sensor) → MQTT → Server → Web Browser`
+
+**Setup:**
+
+1. **Sensor**
+
+#### Light/Proximity/Gesture sensor (APDS-9960)
+We use this sensor [Adafruit APDS-9960](https://www.adafruit.com/product/3595) for this exmaple to detect light (also RGB)
+ 
+<img src="https://cdn-shop.adafruit.com/970x728/3595-06.jpg" width=200>
+
+Connect it to your pi with Qwiic connector
+
+
+<img src="imgs/IMG_0270.jpg" height="200" />
+We need to use the screen to display the color detection, so we need to stop the running piscreen.service to make your screen available again
+
+```bash
+# stop the screen service
+sudo systemctl stop piscreen.service
+```
+
+if you want to restart the screen service
+```bash
+# start the screen service
+sudo systemctl start piscreen.service
+```
+ 
+2. **Server** (one person on laptop):
+```bash
+cd "Lab 6"  
+source .venv/bin/activate
+pip install -r requirements-server.txt
+python app.py
+```
+
+2. **View in browser:**
+   - Grid: `http://farlab.infosci.cornell.edu:5000`
+   - Controller: `http://farlab.infosci.cornell.edu:5000/controller`
+
+3. **Pi publisher** (everyone on their Pi):
+```bash
+# First time setup - create virtual environment
+cd "Lab 6"
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements-pi.txt
+
+# Run the publisher
+python pixel_grid_publisher.py
+```
+
+Hold colored objects near sensor to change your pixel!
+
+![Pixel grid with two devices](imgs/two-devices-grid.png)
+</details>
+
+**📸 Include: Screenshot of grid + photo of your Pi setup**
+![image](https://github.com/Irene-Wu-1002/Interactive-Lab-Hub/blob/Fall2025/Lab%206/imgs/color_sync.png)
+
+---
+
+## Part C. Color Scavenger Hunt
 
 ## 1\. Project Description
 
@@ -248,3 +375,5 @@ https://github.com/user-attachments/assets/badba2af-08f1-4287-ba0d-273a12af5cdd
   * **What would you improve?**
 
     > "First, we would implement the users' suggestion of a scoreboard. The server could keep a dictionary of player names and their scores, and publish it after each round. Second, we would improve the color detection logic (`check_color_match`) to be more robust. Right now, it's just simple thresholds. We could use a more advanced formula (like checking HSL/HSV values) to more accurately distinguish between, for example, 'Red' and 'Orange', or to add more complex colors like 'Yellow'."
+
+
