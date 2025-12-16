@@ -15,7 +15,7 @@ Please place links here to the README.md's for each of your labs here:
 
 [Lab 6. Little Interactions Everywhere](Lab%206/)
 
-[Final Project](https://github.com/IRL-CT/Developing-and-Designing-Interactive-Devices/blob/2025Fall/FinalProject.md)
+[Final Project]([https://github.com/IRL-CT/Developing-and-Designing-Interactive-Devices/blob/2025Fall/FinalProject.md](https://github.com/Irene-Wu-1002/Interactive-Lab-Hub/tree/787522579b9f966a4caab2d7997e9002502d6ae9/Project])
 
 Online Repository
 
