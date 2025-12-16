@@ -1,4 +1,5 @@
 # 🎶 **LumiTune — Sensor-Driven Interactive Music Box**
+**Collaborators: Irene Wu (yw2785), Jessica Hsiao (dh779)**
 
 LumiTune is an immersive, sensor-driven music box that blends **physical interaction**, **environmental sensing**, and **networked control**.
 
