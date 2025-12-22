@@ -97,6 +97,36 @@ Testing Challenge: Sensor Input Conflict
 
 ---
 
+## 🎞️ Reflection
+
+During the development of the interactive device, we learned the importance of extensive user testing and careful system integration. As multiple sensors and interaction modes were combined, conflicts emerged that were not apparent when features were developed in isolation. This highlighted the need to think beyond individual functionalities and to consider how all inputs interact over time within a shared physical space.
+
+Additionally, the project emphasized the value of clear collaboration and dedicated integration time. While dividing responsibilities by subsystem enabled efficient parallel development, many issues only became visible during full-system integration. This experience reinforced that integration is a critical design phase that requires deliberate planning to ensure all features work together cohesively and without interference.
+
+The following challenges were particularly significant lessons for us:
+
+1. Managing Multi-Sensor Interactions Through Time-Based Logic
+
+One of the most important lessons was that multiple sensor inputs cannot be treated independently when they share physical space or user intent. Our initial implementation relied heavily on instantaneous thresholds (e.g., brightness level or proximity duration), which led to unintended interactions—most notably when gesture-based pause controls interfered with ambient light sensing.
+
+Through user testing, we identified time-based filtering (temporal hysteresis) as an effective solution in sensor-driven systems. By introducing stability windows and prioritization rules, we were able to distinguish intentional environmental changes from transient human interactions. This reinforced the insight that robust interaction design often depends more on temporal logic than on hardware precision alone.
+
+2. Collaboration Requires Clear Ownership and Dedicated Integration Time
+
+Dividing responsibilities by subsystem (sensors, frontend, networking, and integration) proved effective for parallel development. However, the project highlighted the necessity of allocating sufficient time specifically for integration. Many challenges only surfaced once all components were running together. This emphasized that integration is not merely a final step, but a distinct and essential phase that should be planned with the same level of care as feature development.
+
+---
+
+## 👭 Team Contributions
+
+Irene primarily focused on developing gesture sensing and ambient brightness sensing using the APDS990, as well as implementing music playback and designing the product’s physical appearance.
+
+Jessica primarily focused on developing the rotation encoder, MQTT communication, and the web-based controller frontend, and on integrating all software components into a cohesive system.
+
+Throughout the project, both team members collaborated closely, jointly troubleshooting technical challenges and supporting each other across different components as needed.
+
+---
+
 ## 📌 **System Overview**
 
 LumiTune integrates:
