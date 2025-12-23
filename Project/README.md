@@ -77,6 +77,7 @@ Primary Objective To design and construct LumiTune, a multimodal interactive mus
 |--------|--------|--------|--------|
 | ![hardware](./assets/hardware.jpg) | ![enclosure - left](./assets/enclosure_1.JPG) | ![enclosure - front](./assets/enclosure_2.JPG) | ![enclosure - right](./assets/enclosure_3.JPG) |
 
+**📸 Device Demo Video**: [Click to watch](https://youtu.be/L6jBFdgEYPU)
 
 **🎬 User Testing Video**: [Click to watch](./assets/user_testing.MP4)
 
@@ -99,21 +100,23 @@ Testing Challenge: Sensor Input Conflict
 
 ## 🎞️ Reflection
 
-During the development of the interactive device, we learned the importance of extensive user testing and careful system integration. As multiple sensors and interaction modes were combined, conflicts emerged that were not apparent when features were developed in isolation. This highlighted the need to think beyond individual functionalities and to consider how all inputs interact over time within a shared physical space.
+Through the development of LumiTune, we learned the importance of extensive user testing and deliberate system integration in multimodal interactive devices. While individual sensors and interaction techniques functioned reliably in isolation, unexpected conflicts emerged once they were combined within a shared physical and temporal context. This experience highlighted the need to think beyond isolated features and instead design for how multiple inputs interact over time within a single embodied system.
 
-Additionally, the project emphasized the value of clear collaboration and dedicated integration time. While dividing responsibilities by subsystem enabled efficient parallel development, many issues only became visible during full-system integration. This experience reinforced that integration is a critical design phase that requires deliberate planning to ensure all features work together cohesively and without interference.
+The project also emphasized the value of clear collaboration structures and dedicated integration phases. Although dividing responsibilities by subsystem enabled efficient parallel development, many critical issues only became apparent during full-system testing. This reinforced the insight that integration is not merely a final implementation step, but a core design phase that requires intentional planning and iteration.
 
 The following challenges were particularly significant lessons for us:
 
-1. Managing Multi-Sensor Interactions Through Time-Based Logic
+### 1. Managing Multi-Sensor Interactions Through Time-Based Logic
 
-One of the most important lessons was that multiple sensor inputs cannot be treated independently when they share physical space or user intent. Our initial implementation relied heavily on instantaneous thresholds (e.g., brightness level or proximity duration), which led to unintended interactions—most notably when gesture-based pause controls interfered with ambient light sensing.
+One key lesson was that sensor inputs cannot be treated independently when they reflect overlapping user intent or physical presence. Our initial implementation relied primarily on instantaneous thresholds (e.g., brightness levels or proximity duration), which led to unintended interactions—most notably when gesture-based pause controls interfered with ambient light sensing.
 
-Through user testing, we identified time-based filtering (temporal hysteresis) as an effective solution in sensor-driven systems. By introducing stability windows and prioritization rules, we were able to distinguish intentional environmental changes from transient human interactions. This reinforced the insight that robust interaction design often depends more on temporal logic than on hardware precision alone.
+Through user testing, we identified time-based filtering and prioritization (temporal hysteresis) as essential strategies in sensor-driven interaction design. By introducing stability windows and input precedence rules, we were able to distinguish intentional environmental changes from transient human actions. This reinforced the understanding that robust interactive behavior often depends more on temporal logic and interaction design decisions than on hardware precision alone.
 
-2. Collaboration Requires Clear Ownership and Dedicated Integration Time
+### 2. Collaboration Requires Clear Ownership and Dedicated Integration Time
 
-Dividing responsibilities by subsystem (sensors, frontend, networking, and integration) proved effective for parallel development. However, the project highlighted the necessity of allocating sufficient time specifically for integration. Many challenges only surfaced once all components were running together. This emphasized that integration is not merely a final step, but a distinct and essential phase that should be planned with the same level of care as feature development.
+Dividing development responsibilities across subsystems—such as sensing, frontend control, networking, and integration—proved effective for parallel progress. However, the project revealed that meaningful integration requires dedicated time and shared ownership. Many interaction conflicts only surfaced once all components operated simultaneously, underscoring that integration should be treated as a first-class design activity rather than a late-stage technical task.
+
+Moving forward, we would approach future multimodal systems by prototyping integration earlier and treating temporal interaction logic as a primary design concern rather than an implementation detail.
 
 ---
 
