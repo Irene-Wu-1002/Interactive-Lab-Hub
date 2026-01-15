@@ -1,9 +1,9 @@
-# 🎶 **LumiTune — Sensor-Driven Interactive Music Box**
+# 🎶 **RumiTune — Sensor-Driven Interactive Music Box**
 **Collaborators: Irene Wu (yw2785), Jessica Hsiao (dh779)**
 
-LumiTune is an immersive, sensor-driven music box that blends **physical interaction**, **environmental sensing**, and **networked control**.
+RumiTune is an immersive, sensor-driven music box that blends **physical interaction**, **environmental sensing**, and **networked control**.
 
-Inspired by traditional mechanical music boxes, LumiTune lets users explore music across decades while the **environment dynamically sets the mood**.
+Inspired by traditional mechanical music boxes, RumiTune lets users explore music across decades while the **environment dynamically sets the mood**.
 
 ---
 
@@ -11,15 +11,15 @@ Inspired by traditional mechanical music boxes, LumiTune lets users explore musi
 
 **🔔 Motivation**
 
-In an era dominated by streaming giants like Spotify and Apple Music, users are often overwhelmed by the "paradox of choice" presented by infinite catalogs and complex interfaces. The simple act of listening to music has shifted from an auditory pleasure to a visual task, requiring constant scrolling and interaction with glass screens. LumiTune seeks to eliminate this digital friction, restoring the immediate simplicity of "just turning on the radio" while offering a curated, magical experience that respects the user's visual attention.
+In an era dominated by streaming giants like Spotify and Apple Music, users are often overwhelmed by the "paradox of choice" presented by infinite catalogs and complex interfaces. The simple act of listening to music has shifted from an auditory pleasure to a visual task, requiring constant scrolling and interaction with glass screens. RumiTune seeks to eliminate this digital friction, restoring the immediate simplicity of "just turning on the radio" while offering a curated, magical experience that respects the user's visual attention.
 
-Furthermore, LumiTune recognizes that music is intrinsically tied to both memory and atmosphere. It creates a unique dialogue between the user and the environment: the user manually controls the timeline (1950s–2020s) to satisfy their nostalgia, while the device automatically interprets ambient lighting to select the matching musical "vibe." This fusion of intentional human choice and dynamic environmental sensing generates moments of emotional resonance, making the technology feel like a responsive companion rather than just a tool.
+Furthermore, RumiTune recognizes that music is intrinsically tied to both memory and atmosphere. It creates a unique dialogue between the user and the environment: the user manually controls the timeline (1950s–2020s) to satisfy their nostalgia, while the device automatically interprets ambient lighting to select the matching musical "vibe." This fusion of intentional human choice and dynamic environmental sensing generates moments of emotional resonance, making the technology feel like a responsive companion rather than just a tool.
 
-Finally, this project responds to the growing desire for tactile interaction in a touchscreen-saturated world. By employing a rotary encoder for "time travel" and touch-free gestures for control, LumiTune reintroduces the satisfying physical feedback of vintage audio equipment. It effectively bridges the gap between the nostalgia of the physical world and the convenience of modern digital libraries.
+Finally, this project responds to the growing desire for tactile interaction in a touchscreen-saturated world. By employing a rotary encoder for "time travel" and touch-free gestures for control, RumiTune reintroduces the satisfying physical feedback of vintage audio equipment. It effectively bridges the gap between the nostalgia of the physical world and the convenience of modern digital libraries.
 
 **🎯 Goal**
 
-Primary Objective To design and construct LumiTune, a multimodal interactive music system that harmonizes tactile physical control with environmental sensing. The goal is to transform the music listening experience from a passive, screen-based task into an intuitive, atmospheric interaction.
+Primary Objective To design and construct RumiTune, a multimodal interactive music system that harmonizes tactile physical control with environmental sensing. The goal is to transform the music listening experience from a passive, screen-based task into an intuitive, atmospheric interaction.
 
 **Key Design Objectives**
 
@@ -100,7 +100,7 @@ Testing Challenge: Sensor Input Conflict
 
 ## 🎞️ Reflection
 
-Through the development of LumiTune, we learned the importance of extensive user testing and deliberate system integration in multimodal interactive devices. While individual sensors and interaction techniques functioned reliably in isolation, unexpected conflicts emerged once they were combined within a shared physical and temporal context. This experience highlighted the need to think beyond isolated features and instead design for how multiple inputs interact over time within a single embodied system.
+Through the development of RumiTune, we learned the importance of extensive user testing and deliberate system integration in multimodal interactive devices. While individual sensors and interaction techniques functioned reliably in isolation, unexpected conflicts emerged once they were combined within a shared physical and temporal context. This experience highlighted the need to think beyond isolated features and instead design for how multiple inputs interact over time within a single embodied system.
 
 The project also emphasized the value of clear collaboration structures and dedicated integration phases. Although dividing responsibilities by subsystem enabled efficient parallel development, many critical issues only became apparent during full-system testing. This reinforced the insight that integration is not merely a final implementation step, but a core design phase that requires intentional planning and iteration.
 
@@ -132,7 +132,7 @@ Throughout the project, both team members collaborated closely, jointly troubles
 
 ## 📌 **System Overview**
 
-LumiTune integrates:
+RumiTune integrates:
 
 ✔ Light + color sensing (APDS-9960)  
 ✔ Gesture recognition (APDS-9960)  
@@ -241,7 +241,7 @@ Project/
 ├── music/                       # MP3 files (organized by decade + genre naming)
 │   └── 1950_chill_01.mp3, 1950_chill_02.mp3, ...
 │
-├── LumiTune-webpage/            # Web UI (React/Vite)
+├── RumiTune-webpage/            # Web UI (React/Vite)
 │   ├── public/
 │   │   └── config.js            # Defines PI_IP + WS_PORT for MQTT over WebSocket
 │   ├── src/
@@ -294,7 +294,7 @@ pip install pygame adafruit-blinka adafruit-circuitpython-apds9960 adafruit-circ
 Frontend:
 
 ```bash
-cd LumiTune-webpage
+cd RumiTune-webpage
 npm install
 ```
 
@@ -309,7 +309,7 @@ sudo systemctl start mosquitto
 
 ---
 
-## ▶️ **Launching LumiTune**
+## ▶️ **Launching RumiTune**
 
 ### ⚠️ IMPORTANT — Stop Pi Screen Driver First
 
@@ -335,7 +335,7 @@ python3 main_musicbox.py
 ### Start web controller
 
 ```bash
-cd LumiTune-webpage
+cd RumiTune-webpage
 npm run dev -- --host
 ```
 
@@ -382,8 +382,8 @@ Each decade folder contains 12 total files (3 tracks × 4 genres).
 
 ## 🖼 Project Poster
 
-![LumiTune Poster](./assets/poster.png)
+![RumiTune Poster](./assets/poster.png)
 
 ---
 
-🎉 Enjoy building and extending LumiTune!
+🎉 Enjoy building and extending RumiTune!
